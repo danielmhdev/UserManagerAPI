@@ -1,0 +1,34 @@
+{
+  "name": "usermanager-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+  "dev": "tsx watch src/server.ts",
+  "build": "tsc",
+  "start": "node dist/server.js"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielmhdev/UserManagerAPI.git"
+  },
+  "keywords": [],
+  "author": "Daniel Martín Hernández",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielmhdev/UserManagerAPI/issues"
+  },
+  "homepage": "https://github.com/danielmhdev/UserManagerAPI#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
