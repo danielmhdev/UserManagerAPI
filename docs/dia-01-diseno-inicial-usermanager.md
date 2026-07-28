@@ -1,4 +1,4 @@
-# Descripción del Proyecto
+# Día 1:Descripción del Proyecto
 
 UserManager API es una API REST para gestionar usuarios de una aplicación.
 Permitirá registrar usuarios, iniciar sesión, consultar perfiles, modificar datos, gestionar roles y proteger rutas privadas mediante autenticación.
