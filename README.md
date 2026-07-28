@@ -72,9 +72,24 @@ DELETE /api/users/:id
 Estos endpoints todavía no trabajan con datos reales. De momento sirven para
 practicar métodos HTTP, rutas, parámetros y body.
 
+## Rutas temporales de debug
+
+Estas rutas se han creado para practicar cómo leer datos de una petición HTTP.
+
+```http
+POST /api/debug/body
+GET /api/debug/params/:id
+GET /api/debug/query
+GET /api/debug/headers
+PATCH /api/debug/users/:id
+```
+
+Más adelante estas rutas podrán eliminarse, ya que no forman parte de la API final.
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
 - [Día 2 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)
 - [Día 3 - Primer Endpoint](docs/dia-03-primer-endpoint.md)
 - [Día 4 - Métodos HTTP](docs/dia-04-metodos-http.md)
+- [Día 5 - JSON, body, params y headers](docs/dia-05-json-body-params-headers.md)

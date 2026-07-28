@@ -1,3 +1,5 @@
+// DÍA 2 - Preparación Proyecto
+
 import express from "express";
 
 const app = express(); // Creamos una instancia de la aplicación Express
@@ -25,6 +27,7 @@ app.get("/api/info", (req, res) => {
         });
     });
 
+// DÍA 3 - Primeros endpoints de la API
 // Creamos un endpoint con GET para verificar el estado de la API
 app.get("/api/health", (req, res) =>{ 
     res.status(200).json({
@@ -44,6 +47,8 @@ app.get("/api/ping", (req, res) => {
     });
 });
 
+// DÍA 4 - Metodos hhtp y parámetros de ruta
+
 // Creamos un endpoint con GET para obtener todos los usuarios
 app.get("/api/users", (req, res) => { 
     res.status(200).json({
@@ -53,7 +58,7 @@ app.get("/api/users", (req, res) => {
 });
 
 // Creamos un endpoint con GET para obtener un usuario por id
-app.get("/api/users/:id", (req, res) => { 
+app.get("/api/users/id/:id", (req, res) => { 
     const {id} = req.params; // Obtenemos el id del usuario desde los parámetros de la solicitud
 
     res.status(200).json({
@@ -123,6 +128,94 @@ app.patch("/api/users/:id/role", (req, res) => {
         message: "Rol de usuario recibido para actualizar",
         id: id,
         role: role,
+    });
+});
+
+// DÍA 5 - JSON, body, params y headers
+
+//Creamos un endpoint para probar body
+app.post("/api/debug/body", (req, res) => {
+    res.status(200).json({
+        message: "Datos recibidos correctamente",
+        body: req.body // Más corto y concsiso que userData = req.body para devolver los datos recibidos en el cuerpo de la solicitud, 
+                        // se usa para debuggear y ver que datos se reciben en el body de la solicitud.
+    });
+});
+
+// Creamos un endopoint para probar params
+// Por ejemplo: http://localhost:3000/api/debug/params/1 nos devolverá un objeto con el id recibido en los params.
+app.get("/api/debug/params/:id", (req, res) => {
+    res.status(200).json({
+        message: "Parámetros recibidos correctamente",
+        params: req.params 
+    });
+});
+
+// Creamos un endpoint para probar query params
+// Por ejemplo: http://localhost:3000/api/debug/query?role=ADMIN&isActive=true nos devolverá un objeto con los query params recibidos.
+app.get("/api/debug/query", (req, res) => {
+    res.status(200).json({
+        message: "Query params recibidos correctamente",
+        query: req.query 
+    });
+});
+
+
+// Creamos un endpoint para probar headers
+// Por ejemplo: http://localhost:3000/api/debug/headers nos devolverá un objeto con los headers recibidos.
+app.get("/api/debug/headers", (req, res) => {
+    res.status(200).json({
+        message: "Headers recibidos correctamente",
+        headers: req.headers,
+    });
+});
+
+// Creamos un endopoint combinando params, query y headers
+// Por ejemplo: http://localhost:3000/api/debug/users/7?notify=true
+app.patch("/api/debug/users/:id", (req, res) => {
+    const {id} = req.params;
+    const {notify} = req.query;
+    const authorization = req.headers.authorization;
+    const changes = req.body;
+
+    res.status(200).json({
+        message: "Datos combinados recibidos",
+        id,
+        notify,
+        authorization,
+        changes
+    });
+});
+
+// Creamos un endpoint para probar una busqueda simulada
+app.get("/api/users/search", (req, res) => {
+    const {name, role} = req.query;
+    res.status(200).json ({
+         message: "Búsqueda de usuarios",
+         filters: {
+            name: name,
+            role: role
+        }
+    });
+});
+
+// Creamos un endpoint de cambio de contraseña para un usuario
+app.patch("/api/users/me/password", (req, res) => {
+    const {currentPassword, newPassword} = req.body;
+
+    res.status(200).json({
+        message : "Solicitud de cambio de contraseña recibida"
+    });
+});
+
+
+// Creamos un enpoint con un header personalizado
+app.get("/api/debug/client", (req, res) => {
+    const clientName = req.headers["x-client-name"];
+
+    res.status(200).json({
+        message: "Header personalizado recibido",
+        clientName: clientName
     });
 });
 
