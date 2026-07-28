@@ -105,26 +105,27 @@ app.get("/api/users/me", (req, res) => {
 // Creamos un endpoint para cambiar estado
 app.patch("/api/users/:id/status", (req, res) =>{
     const {id} = req.params;
-    const updateData = req.body;
+    const {isActive} = req.body;
 
     res.status(200).json({
         message: "Estado de usuario recibido para actualizar",
         id: id,
-        isActive: updateData,
+        isActive: isActive,
     });
 });
 
 // Creamos un endpoint para cambiar rol
 app.patch("/api/users/:id/role", (req, res) => {
     const {id} = req.params;
-    const updateData = req.body;
+    const {role} = req.body;
 
     res.status(200).json ({
         message: "Rol de usuario recibido para actualizar",
         id: id,
-        role: updateData
+        role: role,
     });
 });
+
 //Arrancamos el servidor y escuchamos en el puerto definido
 app.listen(PORT, () => { 
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
