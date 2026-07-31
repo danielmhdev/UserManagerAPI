@@ -10,13 +10,13 @@ con un frontend.
 
 ## Instalación
 
-Instalar dependencias:
+1. **Instalar dependencias:**
 
 ```bash
 npm install
 ```
 
-Arrancar en modo desarrollo:
+2. **Arrancar en modo desarrollo:**
 
 ```bash
 npm run dev
@@ -29,52 +29,31 @@ http://localhost:3000
 ```
 ## Endpoints disponibles
 
-### Health
+**1. Estado y Comprobación**
 
-```http
-GET /api/health
-```
+`GET /api/health` — Comprueba el estado general del servidor.
 
-Respuesta esperada:
+`GET /api/ping` — Endpoint simple de respuesta rápida (`pong`).
 
-```json
-{
-  "status": "ok",
-  "message": "UserManager API funcionando correctamente",
-  "timestamp": "2026-01-01T10:00:00.000Z"
-}
-```
+**2. Endpoints de Usuarios (En Memoria)**
 
-### Ping 
-```http
-GET /api/ping
-```
+`GET /api/users` — Devuelve el listado completo de usuarios cargados en memoria.
 
-Respuesta esperada:
+`GET /api/users/:id` — Devuelve un usuario concreto a partir de su ID (maneja errores 400 si el ID no es válido y 404 si no existe).
 
-```json
-{
- "message": "pong",
- "timestamp": "2026-01-01T10:00:00.000Z "
-}
-```
+`POST /api/users` — Simulación para la creación de usuarios.
 
-### Endpoints simulados de usuarios
+`PATCH /api/users/:id `— Simulación para la actualización parcial de un usuario.
 
-```http
-GET /api/users
-GET /api/users/:id
-POST /api/users
-PATCH /api/users/:id
-DELETE /api/users/:id
-```
+`DELETE /api/users/:id` — Simulación para la eliminación de un usuario.
+
 
 Estos endpoints todavía no trabajan con datos reales. De momento sirven para
 practicar métodos HTTP, rutas, parámetros y body.
 
-## Rutas temporales de debug
+3. **Rutas Temporales de Debug**
 
-Estas rutas se han creado para practicar cómo leer datos de una petición HTTP.
+Estas rutas se han creado para practicar cómo leer datos de una petición HTTP y podrán eliminarse en fases avanzadas.
 
 ```http
 POST /api/debug/body
@@ -84,24 +63,44 @@ GET /api/debug/headers
 PATCH /api/debug/users/:id
 ```
 
-Más adelante estas rutas podrán eliminarse, ya que no forman parte de la API final.
+## Ejemplos de Respuestas
 
-## Endpoints de usuarios
-
-```http
-GET /api/users
-```
-
-Devuelve el listado de usuarios cargados en memoria.
-
-Respuesta de ejemplo:
-
-```json
+1. **Listado de Usuarios `GET /api/users`**
+```JSON
 {
   "message": "Listado de usuarios",
   "total": 3,
-  "data": []
+  "data": [
+    {
+      "id": 1,
+      "name": "Ana García",
+      "email": "ana@email.com",
+      "role": "USER",
+      "isActive": true
+    }
+  ]
 }
+```
+2. **Consultar Usuario por ID `GET /api/users/1`**
+
+Respuesta Correcta (200 OK):
+```JSON
+{
+  "message": "Usuario encontrado",
+  "data": {
+    "id": 1,
+    "name": "Ana García",
+    "email": "ana@email.com",
+    "role": "USER",
+    "isActive": true
+  }
+}
+```
+Posibles Errores:
+```json
+400 Bad Request: {"error": "El ID debe ser un número"}
+
+404 Not Found: {"error": "Usuario no encontrado"}
 ```
 
 ## Documentación del reto
@@ -113,3 +112,4 @@ Respuesta de ejemplo:
 - [Día 5 - JSON, body, params y headers](docs/dia-05-json-body-params-headers.md)
 - [Día 6 - Cliente HTTP y depuración](docs/dia-06-cliente-http-depuracion.md)
 - [Día 7 - Listado de usuarios en memoria](docs/dia-07-listado-usuarios.md)
+- [Día 8 - Consultar usuario por ID](docs/dia-08-consultar-usuario-id.md)

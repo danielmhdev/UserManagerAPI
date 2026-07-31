@@ -323,7 +323,7 @@ app.patch("/api/users/:id", (req, res) => {
         updateData
     });
 });
-// DÍA 6 - Listado de usuarios y total de usuarios
+// DÍA 7 - Listado de usuarios y total de usuarios
 
 // Creamos un endpoint con GET para obtener todos los usuarios con el nuevo array
 app.get("/api/users/array", (req, res) => { 
@@ -335,11 +335,47 @@ app.get("/api/users/array", (req, res) => {
 });
 
 // Conteo total de usuarios
-app.get("/api/users/count", (req, res) => {
+app.get("/api/users/array/count", (req, res) => {
     const totalUsers = users.length;
     res.status(200).json({
         total : totalUsers
     });
+});
+
+// DÍA 8 - Consultar Usuario por ID
+// Creamos un enpoint para consultar usuarios activos
+app.get("/api/users/array/active", (req, res) => {
+    const activeUsers = users.filter((user) => user.isActive);
+    res.status(200).json({
+        activeUsers
+    });
+});
+
+// Creamos un endpoint con GET para obtener un usuario por id usando el array
+app.get("/api/users/array/:id", (req, res) => { 
+    const idParam = req.params.id; // Obtenemos el id del usuario desde los parámetros de la solicitud
+    const id = Number(req.params.id); //Convertimos el id a número para poder compararlo con los ids del array de usuarios
+
+    if (Number.isNaN(id)) { // Si el id no es un número, devolvemos un error 400
+        return res.status(400).json({
+        error: "El ID debe ser un número",
+        receivedId: idParam
+        });
+    }
+
+    const user = users.find((user) => user.id === id); // Buscamos el usuario en el array por id
+
+    if (!user) { // Si no encontramos el usuario, devolvemos un error 404
+        return res.status(404).json({
+        error: "Usuario no encontrado",
+        id
+        });
+    }
+
+  return res.status(200).json({ // Si encontramos el usuario, devolvemos el usuario encontrado
+    message: "Usuario encontrado",
+    data: user
+  });
 });
 
 //Arrancamos el servidor y escuchamos en el puerto definido
