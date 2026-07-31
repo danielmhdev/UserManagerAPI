@@ -93,3 +93,4 @@ Más adelante estas rutas podrán eliminarse, ya que no forman parte de la API f
 - [Día 3 - Primer Endpoint](docs/dia-03-primer-endpoint.md)
 - [Día 4 - Métodos HTTP](docs/dia-04-metodos-http.md)
 - [Día 5 - JSON, body, params y headers](docs/dia-05-json-body-params-headers.md)
+- [Día 6 - Cliente HTTP y depuración](docs/dia-06-cliente-http-depuracion.md)

@@ -70,6 +70,7 @@ app.get("/api/users/id/:id", (req, res) => {
 //Creamos un endpoint con POST para crear un nuevo usuario
 app.post("/api/users", (req, res) => { 
     const userData = req.body; // Obtenemos los datos del usuario desde el cuerpo de la solicitud
+    console.log("Body recibido en POST /api/users:", userData); // AÑADIDO DÍA 6
     res.status(201).json({
         message: "Usuario recibido y creado correctamente",
         data: userData 
@@ -216,6 +217,40 @@ app.get("/api/debug/client", (req, res) => {
     res.status(200).json({
         message: "Header personalizado recibido",
         clientName: clientName
+    });
+});
+
+
+// Creamos un endopoint para depuracion
+app.post("/api/debug/request", (req, res) => {
+    res.status(200).json({
+        message: "Información completa de la petición",
+        method: req.method,
+        path: req.path,
+        params: req.params,
+        query: req.query,
+        headers: req.headers,
+        body: req.body
+    });
+});
+
+// Creamos un endpoint con header personalizado
+app.post("/api/debug/request/headers", (req, res) => {
+    const {message} = req.body;
+    const nombreEstudiante = req.headers["x-student-name"];
+    res.status(200).json ({
+        message,
+        nombreEstudiante
+    });
+});
+
+// Creamos un endpoint para una actualización completa 
+app.patch("/api/users/:id", (req, res) => {
+    const {id} = req.params;
+    const updateData = req.body;
+    res.status(200).json({
+        id,
+        updateData
     });
 });
 
