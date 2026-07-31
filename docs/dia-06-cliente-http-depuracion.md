@@ -97,8 +97,6 @@ app.patch("/api/users/:id", (req, res) => {
 
 ## Mi guía para depurar una petición
 
-## Mi guía para depurar una petición
-
 Cuando una petición HTTP falla o no devuelve el resultado esperado en el cliente (Insomnia / Postman / Frontend), sigo estos pasos de verificación en orden:
 
 1. **Comprobar el estado del servidor:**

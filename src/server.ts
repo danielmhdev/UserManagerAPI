@@ -5,6 +5,75 @@ import express from "express";
 const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = 3000; // Definimos el puerto en el que escuchará el servidor
 
+// DÍA 6 - Listado de usuarios y total de usuarios
+// Creamos un usuario de ejemplo para la API para probar la persistencia de datos.
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: "USER" | "ADMIN";
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+// Datos temporales en memoria. Más adelante se sustituirán por una base de datos.
+const users: User[] = [
+  {
+    id: 1,
+    name: "Ana García",
+    email: "ana@email.com",
+    role: "USER",
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    name: "Carlos Pérez",
+    email: "carlos@email.com",
+    role: "ADMIN",
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    name: "Laura Martínez",
+    email: "laura@email.com",
+    role: "USER",
+    isActive: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    name: "Daniel Martínez",
+    email: "daniel@email.com",
+    role: "USER",
+    isActive: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    name: "Juan Gómez",
+    email: "juan@email.com",
+    role: "USER",
+    isActive: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    name: "Jordi Cido",
+    email: "jordi@email.com",
+    role: "USER",
+    isActive: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
 app.use(express.json()); //Permite leer JSON en las solicitudes entrantes(POST,PUT...)
 
 // Creamos un endpoint con GET en la raíz del servidor
@@ -220,6 +289,7 @@ app.get("/api/debug/client", (req, res) => {
     });
 });
 
+// DÍA 6 - Cliente HTTP y depuración
 
 // Creamos un endopoint para depuracion
 app.post("/api/debug/request", (req, res) => {
@@ -251,6 +321,24 @@ app.patch("/api/users/:id", (req, res) => {
     res.status(200).json({
         id,
         updateData
+    });
+});
+// DÍA 6 - Listado de usuarios y total de usuarios
+
+// Creamos un endpoint con GET para obtener todos los usuarios con el nuevo array
+app.get("/api/users/array", (req, res) => { 
+    res.status(200).json({
+        message: "Listado de Usuarios",
+        total: users.length,
+        data: users
+    });
+});
+
+// Conteo total de usuarios
+app.get("/api/users/count", (req, res) => {
+    const totalUsers = users.length;
+    res.status(200).json({
+        total : totalUsers
     });
 });
 
