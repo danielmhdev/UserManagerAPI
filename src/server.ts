@@ -1,4 +1,4 @@
-// Preparación Proyecto y configuración 
+// Preparación Proyecto y configuración
 
 import express from "express";
 
@@ -27,7 +27,7 @@ const users: User[] = [
     role: "USER",
     isActive: true,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 2,
@@ -36,7 +36,7 @@ const users: User[] = [
     role: "ADMIN",
     isActive: true,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const users: User[] = [
     role: "USER",
     isActive: false,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 4,
@@ -54,7 +54,7 @@ const users: User[] = [
     role: "USER",
     isActive: false,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ const users: User[] = [
     role: "USER",
     isActive: false,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 6,
@@ -72,184 +72,196 @@ const users: User[] = [
     role: "USER",
     isActive: false,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
+    updatedAt: new Date().toISOString(),
+  },
 ];
-
 
 // ==========================================
 // ENDPOINTS GENERALES Y DE INFORMACIÓN
 // ==========================================
-app.get("/", (req, res) => { 
+app.get("/", (req, res) => {
   res.json({
-     name: "UserManager API",
-     version: "1.0.0",
-     status: "running",
-     author: "Daniel M.H.",
-    });
+    name: "UserManager API",
+    version: "1.0.0",
+    status: "running",
+    author: "Daniel M.H.",
+  });
 });
 
 // Creamos un endpoint con GET para obtener información de la API
-app.get("/api/info", (req, res) => { 
-    res.json({
-            project: "UserManager API",
-            description: "API REST para gestionar usuarios",
-            day: 2,
-            technologies: ["Node.js", "Express", "TypeScript"],
-        });
-    });
+app.get("/api/info", (req, res) => {
+  res.json({
+    project: "UserManager API",
+    description: "API REST para gestionar usuarios",
+    day: 2,
+    technologies: ["Node.js", "Express", "TypeScript"],
+  });
+});
 
 // Creamos un endpoint con GET para verificar el estado de la API
-app.get("/api/health", (req, res) =>{ 
-    res.status(200).json({
-        status: "200 OK",
-        message: "UserManager API funcionando correctamente",
-        timestamp: new Date().toISOString(),
-        version: "1.0.0",
-        environment: "development"
-    });
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "200 OK",
+    message: "UserManager API funcionando correctamente",
+    timestamp: new Date().toISOString(),
+    version: "1.0.0",
+    environment: "development",
+  });
 });
 
 // Creamos un endpoint con GET para verificar la latencia de la API
-app.get("/api/ping", (req, res) => { 
-    res.json({
-        message: "pong",
-        timestamp: new Date().toISOString(), 
-    });
+app.get("/api/ping", (req, res) => {
+  res.json({
+    message: "pong",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // ==========================================
 // ENDPOINTS DE USUARIOS (CRUD CON ARRAY)
 // ==========================================
-// NOTA: Se eliminaron los endpoints "simulados" del día 4 y se reemplazaron por los funcionales de los días 7, 8 y 9.
+// NOTA: Se eliminaron los endpoints "simulados" del día 4 y se reemplazaron por los funcionales de los días 7, 8,9 10 y 11.
 // Creamos un endpoint con GET para obtener todos los usuarios con el nuevo array
-app.get("/api/users", (req, res) => { 
-    res.status(200).json({
-        message: "Listado de Usuarios",
-        total: users.length,
-        data: users
-    });
+app.get("/api/users", (req, res) => {
+  res.status(200).json({
+    message: "Listado de Usuarios",
+    total: users.length,
+    data: users,
+  });
 });
 
 // Conteo total de usuarios
 app.get("/api/users/count", (req, res) => {
-    const totalUsers = users.length;
-    res.status(200).json({
-        total : totalUsers
-    });
+  const totalUsers = users.length;
+  res.status(200).json({
+    total: totalUsers,
+  });
 });
 
 // Creamos un endpoint para consultar usuarios activos
 app.get("/api/users/active", (req, res) => {
-    const activeUsers = users.filter((user) => user.isActive);
-    res.status(200).json({
-        activeUsers
-    });
+  const activeUsers = users.filter((user) => user.isActive);
+  res.status(200).json({
+    activeUsers,
+  });
+});
+
+// Creamos un endpoint de usuarios inactivos
+app.get("/api/users/inactive", (req, res) => {
+  const inactiveUsers = users.filter((user) => !user.isActive);
+
+  return res.status(200).json({
+    message: "Lista de usuarios inactivos",
+    inactiveUsers,
+  });
 });
 
 // Creamos un endpoint para probar una busqueda simulada
 app.get("/api/users/search", (req, res) => {
-    const {name, role} = req.query;
-    res.status(200).json ({
-         message: "Búsqueda de usuarios",
-         filters: { name, role }
-    });
+  const { name, role } = req.query;
+  res.status(200).json({
+    message: "Búsqueda de usuarios",
+    filters: { name, role },
+  });
 });
 
 // Creamos un enpoint con GET para consultar nuestro perfil
 app.get("/api/users/me", (req, res) => {
-    res.status(200).json ({
-        id: 4, // Actualizado para que coincida con el ID de Daniel en el array
-        name: "Daniel M.H",
-        email: "daniel@email.com",
-        role: "USER",
-        isActive: true
-    });
+  res.status(200).json({
+    id: 4, // Actualizado para que coincida con el ID de Daniel en el array
+    name: "Daniel M.H",
+    email: "daniel@email.com",
+    role: "USER",
+    isActive: true,
+  });
 });
 
 // Creamos un endpoint con GET para obtener un usuario por id usando el array
-app.get("/api/users/:id", (req, res) => { 
-    const idParam = req.params.id; // Obtenemos el id del usuario desde los parámetros de la solicitud
-    const id = Number(req.params.id); //Convertimos el id a número para poder compararlo con los ids del array de usuarios
+app.get("/api/users/:id", (req, res) => {
+  const idParam = req.params.id; // Obtenemos el id del usuario desde los parámetros de la solicitud
+  const id = Number(req.params.id); //Convertimos el id a número para poder compararlo con los ids del array de usuarios
 
-    if (Number.isNaN(id)) { // Si el id no es un número, devolvemos un error 400
-        return res.status(400).json({
-        error: "El ID debe ser un número",
-        receivedId: idParam
-        });
-    }
+  if (Number.isNaN(id)) {
+    // Si el id no es un número, devolvemos un error 400
+    return res.status(400).json({
+      error: "El ID debe ser un número",
+      receivedId: idParam,
+    });
+  }
 
-    const user = users.find((user) => user.id === id); // Buscamos el usuario en el array por id
+  const user = users.find((user) => user.id === id); // Buscamos el usuario en el array por id
 
-    if (!user) { // Si no encontramos el usuario, devolvemos un error 404
-        return res.status(404).json({
-        error: "Usuario no encontrado",
-        id
-        });
-    }
+  if (!user) {
+    // Si no encontramos el usuario, devolvemos un error 404
+    return res.status(404).json({
+      error: "Usuario no encontrado",
+      id,
+    });
+  }
 
-  return res.status(200).json({ // Si encontramos el usuario, devolvemos el usuario encontrado
+  return res.status(200).json({
+    // Si encontramos el usuario, devolvemos el usuario encontrado
     message: "Usuario encontrado",
-    data: user
+    data: user,
   });
 });
 
 // Creamos un endpoint con POST para crear un nuevo usuario y añadirlo al array de usuarios
 
 app.post("/api/users", (req, res) => {
-  const {name, email, password} = req.body;
-  const cleanName= name.trim();
-  if (!cleanName || !email|| !password){
+  const { name, email, password } = req.body;
+  const cleanName = name.trim();
+  if (!cleanName || !email || !password) {
     return res.status(400).json({
-        error:"name, email y password son obligatorios"
+      error: "name, email y password son obligatorios",
     });
   }
 
-  if(password.length < 6){
+  if (password.length < 6) {
     return res.status(400).json({
-        error: "La contraseña debe tener al menos 6 caracteres"
+      error: "La contraseña debe tener al menos 6 caracteres",
     });
-  };
+  }
   const normalizedEmail = email.trim().toLowerCase();
 
   if (!normalizedEmail.includes("@")) {
     return res.status(400).json({
-        error: "El email no tiene un formato válido"
-  });
-}
+      error: "El email no tiene un formato válido",
+    });
+  }
   const existingUser = users.find((user) => user.email === normalizedEmail);
 
-  
   if (existingUser) {
     return res.status(409).json({
-      error: "El email ya está registrado"
+      error: "El email ya está registrado",
     });
   }
 
-  const newId = users.length > 0 // Si el array de usuarios no está vacío, generamos un nuevo id sumando 1 al id más alto existente, si está vacío, el nuevo id será 1
-  ? Math.max(...users.map((user) => user.id)) + 1
-  : 1;
+  const newId =
+    users.length > 0 // Si el array de usuarios no está vacío, generamos un nuevo id sumando 1 al id más alto existente, si está vacío, el nuevo id será 1
+      ? Math.max(...users.map((user) => user.id)) + 1
+      : 1;
 
-  const newUser: User = { // Creamos un nuevo usuario con los datos recibidos y el nuevo id generado
-  id: newId,
-  name: cleanName,
-  email: normalizedEmail,
-  role: "USER",
-  isActive: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString()
-};
+  const newUser: User = {
+    // Creamos un nuevo usuario con los datos recibidos y el nuevo id generado
+    id: newId,
+    name: cleanName,
+    email: normalizedEmail,
+    role: "USER",
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
 
   users.push(newUser); // Añadimos el nuevo usuario al array de usuarios
 
-
   return res.status(201).json({
-  message: "Usuario creado correctamente",
-  data: newUser
-    });
+    message: "Usuario creado correctamente",
+    data: newUser,
+  });
 });
 
-// Creamos una endpoint PATCH para actualizar un usuario existente del array 
+// Creamos una endpoint PATCH para actualizar un usuario existente del array
 app.patch("/api/users/:id", (req, res) => {
   const idParam = req.params.id;
   const id = Number(idParam);
@@ -257,7 +269,7 @@ app.patch("/api/users/:id", (req, res) => {
   if (Number.isNaN(id)) {
     return res.status(400).json({
       error: "El ID debe ser un número",
-      received: idParam
+      received: idParam,
     });
   }
 
@@ -265,108 +277,108 @@ app.patch("/api/users/:id", (req, res) => {
 
   if (userIndex === -1) {
     return res.status(404).json({
-        error: "Usuario no encontrado",
-        id
-        });
+      error: "Usuario no encontrado",
+      id,
+    });
   }
-  
-// Impedir actualizar el rol a través de este endpoint
-if(req.body.role !== undefined){
+
+  // Impedir actualizar el rol a través de este endpoint
+  if (req.body.role !== undefined) {
     return res.status(400).json({
-        "error": "No se puede modificar el rol desde esta ruta"
+      error: "No se puede modificar el rol desde esta ruta",
     });
-
-}
-// Impedir actualizar el id a través de este endpoint
-if(req.body.id !== undefined){
-   return res.status(400).json({
-        "error": "No se puede modificar el id desde un usuario"
+  }
+  // Impedir actualizar el id a través de este endpoint
+  if (req.body.id !== undefined) {
+    return res.status(400).json({
+      error: "No se puede modificar el id desde un usuario",
     });
-}
+  }
 
-  const {name, email, isActive} = req.body;
+  const { name, email, isActive } = req.body;
 
-  const hasChanges = name !== undefined || email !== undefined || isActive !== undefined;
+  const hasChanges =
+    name !== undefined || email !== undefined || isActive !== undefined;
 
   if (!hasChanges) {
     return res.status(400).json({
-        error: "Debes enviar al menos un campo para actualizar (name, email o isActive)",
+      error:
+        "Debes enviar al menos un campo para actualizar (name, email o isActive)",
     });
   }
 
   // Limpiar y validar el email si llega
   let cleanEmail: string | undefined;
 
-if (email !== undefined) {
-  cleanEmail = String(email).trim().toLowerCase();
+  if (email !== undefined) {
+    cleanEmail = String(email).trim().toLowerCase();
 
-  if (!cleanEmail.includes("@")) {
+    if (!cleanEmail.includes("@")) {
+      return res.status(400).json({
+        error: "El email no tiene un formato válido",
+      });
+    }
+
+    const emailAlreadyExists = users.some(
+      (user) => user.email === cleanEmail && user.id !== id,
+    );
+
+    if (emailAlreadyExists) {
+      return res.status(409).json({
+        error: "El email ya está registrado",
+      });
+    }
+  }
+
+  // Limpiar el nombre si llega
+  let cleanName: string | undefined;
+
+  if (name !== undefined) {
+    cleanName = String(name).trim();
+
+    if (cleanName.length === 0) {
+      return res.status(400).json({
+        error: "El nombre no puede estar vacío",
+      });
+    }
+  }
+
+  // Validamos isActive si llega
+  if (isActive !== undefined && typeof isActive !== "boolean") {
     return res.status(400).json({
-      error: "El email no tiene un formato válido"
+      error: "isActive debe ser true o false",
     });
   }
 
-  const emailAlreadyExists = users.some(
-    (user) => user.email === cleanEmail && user.id !== id
-  );
+  // Actualizamos los campos del usuario en el array
+  const currentUser = users[userIndex];
 
-  if (emailAlreadyExists) {
-    return res.status(409).json({
-      error: "El email ya está registrado"
-    });
-  }
-}
+  const updatedUser: User = {
+    ...currentUser,
+    name: cleanName ?? currentUser.name,
+    email: cleanEmail ?? currentUser.email,
+    isActive: isActive ?? currentUser.isActive,
+    updatedAt: new Date().toISOString(),
+  };
 
-// Limpiar el nombre si llega
-let cleanName: string | undefined;
-
-if (name !== undefined) {
-  cleanName = String(name).trim();
-
-  if (cleanName.length === 0) {
-    return res.status(400).json({
-      error: "El nombre no puede estar vacío"
-    });
-  }
-}
-
-// Validamos isActive si llega
-if (isActive !== undefined && typeof isActive !== "boolean") {
-  return res.status(400).json({
-    error: "isActive debe ser true o false"
-  });
-}
-
-// Actualizamos los campos del usuario en el array
-const currentUser = users[userIndex];
-
-const updatedUser: User = {
-  ...currentUser,
-  name: cleanName ?? currentUser.name,
-  email: cleanEmail ?? currentUser.email,
-  isActive: isActive ?? currentUser.isActive,
-  updatedAt: new Date().toISOString()
-};
-
-users[userIndex] = updatedUser;
+  users[userIndex] = updatedUser;
 
   return res.status(200).json({
-  message: "Usuario actualizado correctamente",
-  data: updatedUser
-});
+    message: "Usuario actualizado correctamente",
+    data: updatedUser,
+  });
 });
 
 // Creamos un endpoint para cambiar estado
-app.patch("/api/users/:id/status", (req, res) =>{
-    const idParam = req.params.id;
-    const id = Number(idParam);
-    const {isActive} = req.body;
-
+app.patch("/api/users/:id/status", (req, res) => {
+  const idParam = req.params.id;
+  const id = Number(idParam);
+  const { isActive } = req.body;
 
   if (Number.isNaN(id)) {
     return res.status(400).json({
       error: "El ID debe ser un número",
-      received: idParam
+      received: idParam,
     });
   }
 
@@ -374,61 +386,148 @@ app.patch("/api/users/:id/status", (req, res) =>{
 
   if (userIndex === -1) {
     return res.status(404).json({
-        error: "Usuario no encontrado",
-        id
-        });
+      error: "Usuario no encontrado",
+      id,
+    });
   }
 
-if (isActive === undefined || typeof isActive !== "boolean") {
-  return res.status(400).json({
-    error: "isActive debe ser true o false"
-  });
-}
-
-const currentUser = users[userIndex];
-
-const updatedUser: User = {
-  ...currentUser,
-  isActive: isActive ?? currentUser.isActive,
-  updatedAt: new Date().toISOString()
-};
-users[userIndex] = updatedUser;
-
-    res.status(200).json({
-        message: "Estado de usuario actualizado",
-        data: updatedUser,
+  if (isActive === undefined || typeof isActive !== "boolean") {
+    return res.status(400).json({
+      error: "isActive debe ser true o false",
     });
+  }
+
+  const currentUser = users[userIndex];
+
+  const updatedUser: User = {
+    ...currentUser,
+    isActive: isActive ?? currentUser.isActive,
+    updatedAt: new Date().toISOString(),
+  };
+  users[userIndex] = updatedUser;
+
+  res.status(200).json({
+    message: "Estado de usuario actualizado",
+    data: updatedUser,
+  });
 });
 
 // Creamos un endpoint para cambiar rol
 app.patch("/api/users/:id/role", (req, res) => {
-    const {id} = req.params;
-    const {role} = req.body;
+  const { id } = req.params;
+  const { role } = req.body;
 
-    res.status(200).json ({
-        message: "Rol de usuario recibido para actualizar",
-        id: id,
-        role: role,
-    });
+  res.status(200).json({
+    message: "Rol de usuario recibido para actualizar",
+    id: id,
+    role: role,
+  });
 });
 
 // Creamos un endpoint de cambio de contraseña para un usuario
 app.patch("/api/users/me/password", (req, res) => {
-    const {currentPassword, newPassword} = req.body;
+  const { currentPassword, newPassword } = req.body;
 
-    res.status(200).json({
-        message : "Solicitud de cambio de contraseña recibida"
-    });
+  res.status(200).json({
+    message: "Solicitud de cambio de contraseña recibida",
+  });
 });
 
 // Creamos un endpoint DELETE para eliminar un usuario existente
 app.delete("/api/users/:id", (req, res) => {
-    const {id} = req.params;
-    res.status(200).json({
-        message: `Usuario eliminado correctamente`,
-        id: id 
+  const idParam = req.params.id;
+  const id = Number(idParam);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({
+      error: "El ID debe ser un número",
+      received: idParam,
     });
+  }
+  const userIndex = users.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      error: "Usuario no encontrado",
+      id,
+    });
+  }
+  const currentUser = users[userIndex];
+
+  if (!currentUser.isActive) {
+    return res.status(200).json({
+      message: "El usuario ya está desactivado",
+      data: {
+        id: currentUser.id,
+        name: currentUser.name,
+        isActive: currentUser.isActive,
+      },
+    });
+  }
+
+  const updatedUser: User = {
+    ...currentUser,
+    isActive: false,
+    updatedAt: new Date().toISOString(),
+  };
+
+  users[userIndex] = updatedUser;
+
+  return res.status(200).json({
+    message: "Usuario desactivado correctamente",
+    data: updatedUser,
+  });
 });
+
+// Creamos un endpoint para reactivar un usuario desactivado
+app.patch("/api/users/:id/reactivate", (req, res) => {
+  const idParam = req.params.id;
+  const id = Number(idParam);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({
+      error: "El ID debe ser un número",
+      received: idParam,
+    });
+  }
+
+  const userIndex = users.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+      error: "Usuario no encontrado",
+      id,
+    });
+  }
+
+  const currentUser = users[userIndex];
+
+  if (currentUser.isActive) {
+    return res.status(200).json({
+      message: "El usuario ya está activo",
+      data: {
+        id: currentUser.id,
+        name: currentUser.name,
+        isActive: currentUser.isActive,
+      },
+    });
+  }
+
+  const updatedUser: User = {
+    ...currentUser,
+    isActive: true,
+    updatedAt: new Date().toISOString(),
+  };
+
+  users[userIndex] = updatedUser;
+
+  return res.status(200).json({
+    message: "Usuario reactivado correctamente",
+    data: updatedUser,
+  });
+});
+
+
 
 // ==========================================
 // ENDPOINTS DE DEPURACIÓN Y PRUEBAS (DEBUG)
@@ -436,92 +535,91 @@ app.delete("/api/users/:id", (req, res) => {
 
 //Creamos un endpoint para probar body
 app.post("/api/debug/body", (req, res) => {
-    res.status(200).json({
-        message: "Datos recibidos correctamente",
-        body: req.body // Más corto y concsiso que userData = req.body para devolver los datos recibidos en el cuerpo de la solicitud, 
-                        // se usa para debuggear y ver que datos se reciben en el body de la solicitud.
-    });
+  res.status(200).json({
+    message: "Datos recibidos correctamente",
+    body: req.body, // Más corto y concsiso que userData = req.body para devolver los datos recibidos en el cuerpo de la solicitud,
+    // se usa para debuggear y ver que datos se reciben en el body de la solicitud.
+  });
 });
 
 // Creamos un endopoint para probar params
 // Por ejemplo: http://localhost:3000/api/debug/params/1 nos devolverá un objeto con el id recibido en los params.
 app.get("/api/debug/params/:id", (req, res) => {
-    res.status(200).json({
-        message: "Parámetros recibidos correctamente",
-        params: req.params 
-    });
+  res.status(200).json({
+    message: "Parámetros recibidos correctamente",
+    params: req.params,
+  });
 });
 
 // Creamos un endpoint para probar query params
 // Por ejemplo: http://localhost:3000/api/debug/query?role=ADMIN&isActive=true nos devolverá un objeto con los query params recibidos.
 app.get("/api/debug/query", (req, res) => {
-    res.status(200).json({
-        message: "Query params recibidos correctamente",
-        query: req.query 
-    });
+  res.status(200).json({
+    message: "Query params recibidos correctamente",
+    query: req.query,
+  });
 });
 
 // Creamos un endpoint para probar headers
 // Por ejemplo: http://localhost:3000/api/debug/headers nos devolverá un objeto con los headers recibidos.
 app.get("/api/debug/headers", (req, res) => {
-    res.status(200).json({
-        message: "Headers recibidos correctamente",
-        headers: req.headers,
-    });
+  res.status(200).json({
+    message: "Headers recibidos correctamente",
+    headers: req.headers,
+  });
 });
 
 // Creamos un endopoint combinando params, query y headers
 // Por ejemplo: http://localhost:3000/api/debug/users/7?notify=true
 app.patch("/api/debug/users/:id", (req, res) => {
-    const {id} = req.params;
-    const {notify} = req.query;
-    const authorization = req.headers.authorization;
-    const changes = req.body;
+  const { id } = req.params;
+  const { notify } = req.query;
+  const authorization = req.headers.authorization;
+  const changes = req.body;
 
-    res.status(200).json({
-        message: "Datos combinados recibidos",
-        id,
-        notify,
-        authorization,
-        changes
-    });
+  res.status(200).json({
+    message: "Datos combinados recibidos",
+    id,
+    notify,
+    authorization,
+    changes,
+  });
 });
 
 // Creamos un enpoint con un header personalizado
 app.get("/api/debug/client", (req, res) => {
-    const clientName = req.headers["x-client-name"];
+  const clientName = req.headers["x-client-name"];
 
-    res.status(200).json({
-        message: "Header personalizado recibido",
-        clientName: clientName
-    });
+  res.status(200).json({
+    message: "Header personalizado recibido",
+    clientName: clientName,
+  });
 });
-
 
 // Creamos un endopoint para depuracion
 app.post("/api/debug/request", (req, res) => {
-    res.status(200).json({
-        message: "Información completa de la petición",
-        method: req.method,
-        path: req.path,
-        params: req.params,
-        query: req.query,
-        headers: req.headers,
-        body: req.body
-    });
+  res.status(200).json({
+    message: "Información completa de la petición",
+    method: req.method,
+    path: req.path,
+    params: req.params,
+    query: req.query,
+    headers: req.headers,
+    body: req.body,
+  });
 });
 
 // Creamos un endpoint con header personalizado
 app.post("/api/debug/request/headers", (req, res) => {
-    const {message} = req.body;
-    const nombreEstudiante = req.headers["x-student-name"];
-    res.status(200).json ({
-        message,
-        nombreEstudiante
-    });
+  const { message } = req.body;
+  const nombreEstudiante = req.headers["x-student-name"];
+  res.status(200).json({
+    message,
+    nombreEstudiante,
+  });
 });
 
 //Arrancamos el servidor y escuchamos en el puerto definido
-app.listen(PORT, () => { 
+app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });

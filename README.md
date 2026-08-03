@@ -27,6 +27,7 @@ La API se ejecutará inicialmente en:
 ```text
 http://localhost:3000
 ```
+
 ## Endpoints disponibles
 
 **1. Estado y Comprobación**
@@ -47,7 +48,6 @@ http://localhost:3000
 
 `DELETE /api/users/:id` — Simulación para la eliminación de un usuario.
 
-
 Estos endpoints todavía no trabajan con datos reales. De momento sirven para
 practicar métodos HTTP, rutas, parámetros y body.
 
@@ -66,6 +66,7 @@ PATCH /api/debug/users/:id
 ## Ejemplos de Respuestas
 
 1. **Listado de Usuarios `GET /api/users`**
+
 ```JSON
 {
   "message": "Listado de usuarios",
@@ -81,9 +82,13 @@ PATCH /api/debug/users/:id
   ]
 }
 ```
+
+---
+
 2. **Consultar Usuario por ID `GET /api/users/1`**
 
 Respuesta Correcta (200 OK):
+
 ```JSON
 {
   "message": "Usuario encontrado",
@@ -96,17 +101,21 @@ Respuesta Correcta (200 OK):
   }
 }
 ```
+
 Posibles Errores:
+
 ```json
 400 Bad Request: {"error": "El ID debe ser un número"}
 
 404 Not Found: {"error": "Usuario no encontrado"}
 ```
 
+---
 
 **3. Crear Usuario `POST /api/users`**
 
 Petición (Body JSON):
+
 ```Json
 {
   "name": "María López",
@@ -129,15 +138,19 @@ Respuesta Correcta (201 Created):
   }
 }
 ```
+
 Posibles Errores:
 
 Campos obligatorios faltantes (Error 400 Bad request):
+
 ```json
 {
   "error": "name, email y password son obligatorios"
 }
 ```
+
 Longitud insuficiente de contraseña(Error 400 Bad request):
+
 ```json
 {
   "error": "La contraseña debe tener al menos 6 caracteres"
@@ -145,11 +158,15 @@ Longitud insuficiente de contraseña(Error 400 Bad request):
 ```
 
 Email duplicado(Error 409 Conflict):
+
 ```json
 {
   "error": "El email ya está registrado"
 }
 ```
+
+---
+
 **4. Actualizar Usuario `PATCH /api/users`**
 
 Permite modificar parcialmente los datos de un usuario.
@@ -213,6 +230,52 @@ Posibles errores:
 }
 ```
 
+---
+
+**5. Eliminar o Desactivar Usuario `DELETE /api/users`**
+
+```http
+DELETE /api/users/:id
+```
+
+En este proyecto, esta ruta no borra físicamente el usuario. Realiza un borrado
+lógico marcando:
+
+```text
+isActive = false
+```
+
+Respuesta correcta:
+
+```json
+{
+  "message": "Usuario desactivado correctamente",
+  "data": {
+    "id": 1,
+    "name": "Ana García",
+    "email": "ana@email.com",
+    "role": "USER",
+    "isActive": false
+  }
+}
+```
+
+Posibles errores:
+
+```json
+{
+  "error": "El ID debe ser un número",
+  "received": "abc"
+}
+```
+
+```json
+{
+  "error": "Usuario no encontrado",
+  "id": 999
+}
+```
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -225,5 +288,4 @@ Posibles errores:
 - [Día 8 - Consultar usuario por ID](docs/dia-08-consultar-usuario-id.md)
 - [Día 9 - Crear usuarios en memoria](docs/dia-09-crear-usuarios.md)
 - [Día 10 - Actualizar usuarios en memoria](docs/dia-10-actualizar-usuarios.md)
-
-
+- [Día 11 - Eliminar o desactivar usuarios en memoria](docs/dia-11-eliminar-desactivar-usuarios.md)
