@@ -33,7 +33,7 @@ POST /api/users
 | Caso | Código esperado | Resultado |
 | :--- | :---: | :--- |
 | **Usuario correcto** | 201 | ![Post correcto](./images/post-usuario-correctov2.png) |
-| **Faltan campos** | 400 | ![error 400](./images/post-error-400.png) |
+| **Faltan campos** | 400 | ![error 400](./images/post-error-400-pass.png) |
 | **Password corta** | 400 | ![error 400](./images/post-error-400-pass.png) |
 | **Email duplicado** | 409 | ![error 400](./images/post-error-409-duplicado.png) |
 ---
