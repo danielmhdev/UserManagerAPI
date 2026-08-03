@@ -104,7 +104,7 @@ Posibles Errores:
 ```
 
 
-**3. Crear Usuario POST `/api/users`**
+**3. Crear Usuario `POST /api/users`**
 
 Petición (Body JSON):
 ```Json
@@ -150,6 +150,69 @@ Email duplicado(Error 409 Conflict):
   "error": "El email ya está registrado"
 }
 ```
+**4. Actualizar Usuario `PATCH /api/users`**
+
+Permite modificar parcialmente los datos de un usuario.
+
+Campos permitidos:
+
+```text
+name
+email
+isActive
+```
+
+Body de ejemplo:
+
+```json
+{
+  "name": "Ana Martínez"
+}
+```
+
+Respuesta correcta:
+
+```json
+{
+  "message": "Usuario actualizado correctamente",
+  "data": {
+    "id": 1,
+    "name": "Ana Martínez",
+    "email": "ana@email.com",
+    "role": "USER",
+    "isActive": true
+  }
+}
+```
+
+Posibles errores:
+
+```json
+{
+  "error": "El ID debe ser un número",
+  "received": "abc"
+}
+```
+
+```json
+{
+  "error": "Usuario no encontrado",
+  "id": 999
+}
+```
+
+```json
+{
+  "error": "Debes enviar al menos un campo para actualizar"
+}
+```
+
+```json
+{
+  "error": "El email ya está registrado"
+}
+```
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -161,4 +224,6 @@ Email duplicado(Error 409 Conflict):
 - [Día 7 - Listado de usuarios en memoria](docs/dia-07-listado-usuarios.md)
 - [Día 8 - Consultar usuario por ID](docs/dia-08-consultar-usuario-id.md)
 - [Día 9 - Crear usuarios en memoria](docs/dia-09-crear-usuarios.md)
+- [Día 10 - Actualizar usuarios en memoria](docs/dia-10-actualizar-usuarios.md)
+
 

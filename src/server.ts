@@ -249,26 +249,154 @@ app.post("/api/users", (req, res) => {
     });
 });
 
-// Creamos una endpoint PATCH para actualizar un usuario existente
+// Creamos una endpoint PATCH para actualizar un usuario existente del array 
 app.patch("/api/users/:id", (req, res) => {
-    const {id} = req.params;
-    const updateData = req.body; // Obtenemos los datos de actualización desde el cuerpo de la solicitud
-    res.status(200).json({
-        message: `Usuario actualizado correctamente`,
-        id: id,
-        data: updateData 
+  const idParam = req.params.id;
+  const id = Number(idParam);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({
+      error: "El ID debe ser un número",
+      received: idParam
     });
+  }
+
+  const userIndex = users.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+        error: "Usuario no encontrado",
+        id
+        });
+  }
+  
+// Impedir actualizar el rol a través de este endpoint
+if(req.body.role !== undefined){
+    return res.status(400).json({
+        "error": "No se puede modificar el rol desde esta ruta"
+    });
+
+}
+// Impedir actualizar el id a través de este endpoint
+if(req.body.id !== undefined){
+   return res.status(400).json({
+        "error": "No se puede modificar el id desde un usuario"
+    });
+}
+
+  const {name, email, isActive} = req.body;
+
+  const hasChanges = name !== undefined || email !== undefined || isActive !== undefined;
+
+  if (!hasChanges) {
+    return res.status(400).json({
+        error: "Debes enviar al menos un campo para actualizar (name, email o isActive)",
+    });
+  }
+
+  // Limpiar y validar el email si llega
+  let cleanEmail: string | undefined;
+
+if (email !== undefined) {
+  cleanEmail = String(email).trim().toLowerCase();
+
+  if (!cleanEmail.includes("@")) {
+    return res.status(400).json({
+      error: "El email no tiene un formato válido"
+    });
+  }
+
+  const emailAlreadyExists = users.some(
+    (user) => user.email === cleanEmail && user.id !== id
+  );
+
+  if (emailAlreadyExists) {
+    return res.status(409).json({
+      error: "El email ya está registrado"
+    });
+  }
+}
+
+// Limpiar el nombre si llega
+let cleanName: string | undefined;
+
+if (name !== undefined) {
+  cleanName = String(name).trim();
+
+  if (cleanName.length === 0) {
+    return res.status(400).json({
+      error: "El nombre no puede estar vacío"
+    });
+  }
+}
+
+// Validamos isActive si llega
+if (isActive !== undefined && typeof isActive !== "boolean") {
+  return res.status(400).json({
+    error: "isActive debe ser true o false"
+  });
+}
+
+// Actualizamos los campos del usuario en el array
+const currentUser = users[userIndex];
+
+const updatedUser: User = {
+  ...currentUser,
+  name: cleanName ?? currentUser.name,
+  email: cleanEmail ?? currentUser.email,
+  isActive: isActive ?? currentUser.isActive,
+  updatedAt: new Date().toISOString()
+};
+
+users[userIndex] = updatedUser;
+
+  return res.status(200).json({
+  message: "Usuario actualizado correctamente",
+  data: updatedUser
+});
 });
 
 // Creamos un endpoint para cambiar estado
 app.patch("/api/users/:id/status", (req, res) =>{
-    const {id} = req.params;
+    const idParam = req.params.id;
+    const id = Number(idParam);
     const {isActive} = req.body;
 
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({
+      error: "El ID debe ser un número",
+      received: idParam
+    });
+  }
+
+  const userIndex = users.findIndex((user) => user.id === id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({
+        error: "Usuario no encontrado",
+        id
+        });
+  }
+
+if (isActive === undefined || typeof isActive !== "boolean") {
+  return res.status(400).json({
+    error: "isActive debe ser true o false"
+  });
+}
+
+const currentUser = users[userIndex];
+
+const updatedUser: User = {
+  ...currentUser,
+  isActive: isActive ?? currentUser.isActive,
+  updatedAt: new Date().toISOString()
+};
+users[userIndex] = updatedUser;
+
     res.status(200).json({
-        message: "Estado de usuario recibido para actualizar",
-        id: id,
-        isActive: isActive,
+        message: "Estado de usuario actualizado",
+        data: updatedUser,
     });
 });
 
@@ -302,11 +430,9 @@ app.delete("/api/users/:id", (req, res) => {
     });
 });
 
-
-
-
-
-// DÍA 5 - JSON, body, params y headers
+// ==========================================
+// ENDPOINTS DE DEPURACIÓN Y PRUEBAS (DEBUG)
+// ==========================================
 
 //Creamos un endpoint para probar body
 app.post("/api/debug/body", (req, res) => {
@@ -335,7 +461,6 @@ app.get("/api/debug/query", (req, res) => {
     });
 });
 
-
 // Creamos un endpoint para probar headers
 // Por ejemplo: http://localhost:3000/api/debug/headers nos devolverá un objeto con los headers recibidos.
 app.get("/api/debug/headers", (req, res) => {
@@ -362,9 +487,6 @@ app.patch("/api/debug/users/:id", (req, res) => {
     });
 });
 
-
-
-
 // Creamos un enpoint con un header personalizado
 app.get("/api/debug/client", (req, res) => {
     const clientName = req.headers["x-client-name"];
@@ -375,7 +497,6 @@ app.get("/api/debug/client", (req, res) => {
     });
 });
 
-// DÍA 6 - Cliente HTTP y depuración
 
 // Creamos un endopoint para depuracion
 app.post("/api/debug/request", (req, res) => {
@@ -399,13 +520,6 @@ app.post("/api/debug/request/headers", (req, res) => {
         nombreEstudiante
     });
 });
-
-
-// DÍA 8 - Consultar Usuario por ID
-
-// DÍA 9 - Crear usuarios en memoria
-
-
 
 //Arrancamos el servidor y escuchamos en el puerto definido
 app.listen(PORT, () => { 
