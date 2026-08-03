@@ -377,6 +377,62 @@ app.get("/api/users/array/:id", (req, res) => {
     data: user
   });
 });
+// DÍA 9 - Crear usuarios en memoria
+// Creamos un endpoint con POST para crear un nuevo usuario y añadirlo al array de usuarios
+app.post("/api/users/array", (req, res) => {
+  const {name, email, password} = req.body;
+  const cleanName= name.trim();
+  if (!cleanName || !email|| !password){
+    return res.status(400).json({
+        error:"name, email y password son obligatorios"
+    });
+  }
+
+  if(password.length < 6){
+    return res.status(400).json({
+        error: "La contraseña debe tener al menos 6 caracteres"
+    });
+  };
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!normalizedEmail.includes("@")) {
+    return res.status(400).json({
+        error: "El email no tiene un formato válido"
+  });
+}
+  const existingUser = users.find((user) => user.email === normalizedEmail);
+
+  
+  if (existingUser) {
+    return res.status(409).json({
+      error: "El email ya está registrado"
+    });
+  }
+
+  const newId = users.length > 0 // Si el array de usuarios no está vacío, generamos un nuevo id sumando 1 al id más alto existente, si está vacío, el nuevo id será 1
+  ? Math.max(...users.map((user) => user.id)) + 1
+  : 1;
+
+  const newUser: User = { // Creamos un nuevo usuario con los datos recibidos y el nuevo id generado
+  id: newId,
+  name: cleanName,
+  email: normalizedEmail,
+  role: "USER",
+  isActive: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+};
+
+  users.push(newUser); // Añadimos el nuevo usuario al array de usuarios
+
+
+  return res.status(201).json({
+  message: "Usuario creado correctamente",
+  data: newUser
+});
+});
+
+
 
 //Arrancamos el servidor y escuchamos en el puerto definido
 app.listen(PORT, () => { 

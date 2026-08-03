@@ -103,6 +103,53 @@ Posibles Errores:
 404 Not Found: {"error": "Usuario no encontrado"}
 ```
 
+
+**3. Crear Usuario POST `/api/users`**
+
+Petición (Body JSON):
+```Json
+{
+  "name": "María López",
+  "email": "maria@email.com",
+  "password": "123456"
+}
+```
+
+Respuesta Correcta (201 Created):
+
+```json
+{
+  "message": "Usuario creado correctamente",
+  "data": {
+    "id": 4,
+    "name": "María López",
+    "email": "maria@email.com",
+    "role": "USER",
+    "isActive": true
+  }
+}
+```
+Posibles Errores:
+
+Campos obligatorios faltantes (Error 400 Bad request):
+```json
+{
+  "error": "name, email y password son obligatorios"
+}
+```
+Longitud insuficiente de contraseña(Error 400 Bad request):
+```json
+{
+  "error": "La contraseña debe tener al menos 6 caracteres"
+}
+```
+
+Email duplicado(Error 409 Conflict):
+```json
+{
+  "error": "El email ya está registrado"
+}
+```
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -113,3 +160,5 @@ Posibles Errores:
 - [Día 6 - Cliente HTTP y depuración](docs/dia-06-cliente-http-depuracion.md)
 - [Día 7 - Listado de usuarios en memoria](docs/dia-07-listado-usuarios.md)
 - [Día 8 - Consultar usuario por ID](docs/dia-08-consultar-usuario-id.md)
+- [Día 9 - Crear usuarios en memoria](docs/dia-09-crear-usuarios.md)
+
