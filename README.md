@@ -84,6 +84,38 @@ Ejemplo de error:
 }
 ```
 
+### Validación de email
+
+La API normaliza los emails antes de guardarlos o compararlos.
+
+Proceso aplicado:
+
+- `trim()`
+- `toLowerCase()`
+- Validación básica de formato.
+- Comprobación de duplicados.
+
+Ejemplo:
+
+```text
+"  USUARIO@EMAIL.COM  " -> "usuario@email.com"
+```
+
+Si se intenta crear o actualizar un usuario con un email ya existente, la API
+responde:
+
+```json
+{
+  "error": "El email ya está registrado"
+}
+```
+
+Código:
+
+```http
+409 Conflict
+```
+
 ## Ejemplos de Respuestas
 
 1. **Listado de Usuarios `GET /api/users`**
@@ -311,4 +343,5 @@ Posibles errores:
 - [Día 10 - Actualizar usuarios en memoria](docs/dia-10-actualizar-usuarios.md)
 - [Día 11 - Eliminar o desactivar usuarios en memoria](docs/dia-11-eliminar-desactivar-usuarios.md)
 - [Día 12 - Validación manual básica](docs/dia-12-validacion-manual-basica.md)
+- [Día 13 - Validación de email y duplicados](docs/dia-13-validacion-email-duplicados.md)
 

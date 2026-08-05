@@ -80,7 +80,7 @@ const users: User[] = [
 // Funciones auxiliares y middlewares
 // ==========================================
 // Valida que un valor sea un string no vacío.
-function isNonEmptyString(value: unknown): value is string{
+function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
@@ -91,11 +91,28 @@ function isBoolean(value: unknown): value is boolean {
 
 // Valida que un email tenga un formato básico válido.
 function isValidBasicEmail(value: string): boolean {
-  return value.includes("@") && value.includes(".");
+  return (
+    value.includes("@") &&
+    value.includes(".") &&
+    !value.startsWith("@") &&
+    !value.endsWith("@")
+  );
+}
+// Normaliza un email eliminando espacios y convirtiéndolo a minúsculas.
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
 }
 
+// Valida si un email ya está registrado en el array de usuarios, ignorando un id específico si se proporciona.
+function isEmailTaken(email: string, userIdToIgnore?: number): boolean {
+  const normalizedEmail = normalizeEmail(email);
+
+  return users.some(
+    (user) => user.email === normalizedEmail && user.id !== userIdToIgnore,
+  );
+}
 // Valida que un nombre tenga al menos dos caracteres
-function isValidName(value:string): boolean {
+function isValidName(value: string): boolean {
   return value.trim().length >= 2;
 }
 // Valida que una contraseña tenga al menos 8 caracteres, incluyendo letras, números y caracteres especiales.
@@ -192,6 +209,41 @@ app.get("/api/users/search", (req, res) => {
   });
 });
 
+// Creamos un endpoint para probar una busqueda simulada por email
+app.get("/api/users/search/email", (req, res) => {
+  const { email } = req.query;
+  // Validamos que el email sea un string no vacío y tenga un formato válido
+  if (!isNonEmptyString(email)) {
+    return res.status(400).json({
+      error: "El email debe ser un texto no vacío",
+      receivedEmail: email,
+    });
+  }
+  // Normalizamos el email para evitar problemas de mayúsculas y espacios
+  const cleanEmail = normalizeEmail(email);
+
+  if (!isValidBasicEmail(cleanEmail)) {
+    return res.status(400).json({
+      error: "El email no tiene un formato válido",
+      receivedEmail: email,
+    });
+  }
+  // Bucamos en el array
+  const user = users.find((user) => user.email === cleanEmail);
+  // Si no encontramos el usuario, devolvemos un error 404
+  if (!user) {
+    return res.status(404).json({
+      error: "Usuario no encontrado",
+      email: cleanEmail,
+    });
+  }
+
+  res.status(200).json({
+    message: "Usuario encontrado",
+    data: user,
+  });
+});
+
 // Creamos un enpoint con GET para consultar nuestro perfil
 app.get("/api/users/me", (req, res) => {
   res.status(200).json({
@@ -234,59 +286,58 @@ app.get("/api/users/:id", (req, res) => {
 });
 
 // Creamos un endpoint con POST para crear un nuevo usuario y añadirlo al array de usuarios
-
 app.post("/api/users", (req, res) => {
   const { name, email, password } = req.body;
 
   if (!isNonEmptyString(name)) {
     return res.status(400).json({
-      error: "El nombre debe ser un texto no vacío"
+      error: "El nombre debe ser un texto no vacío",
     });
   }
 
   if (!isValidName(name)) {
     return res.status(400).json({
-      error: "El nombre debe tener al menos dos caracteres"
+      error: "El nombre debe tener al menos dos caracteres",
     });
   }
 
   if (!isNonEmptyString(email)) {
     return res.status(400).json({
-      error: "El email debe ser un texto no vacío"
+      error: "El email debe ser un texto no vacío",
     });
   }
 
   if (!isNonEmptyString(password)) {
     return res.status(400).json({
-      error: "La contraseña debe ser un texto no vacío"
+      error: "La contraseña debe ser un texto no vacío",
     });
   }
 
   const cleanName = name.trim();
-  const cleanEmail = email.trim().toLowerCase();
+  const cleanEmail = normalizeEmail(email);
   const cleanPassword = password.trim();
 
-  if (cleanPassword.length < 6) {
+  if (!isValidPassword(cleanPassword)) {
     return res.status(400).json({
-      error: "La contraseña debe tener al menos 6 caracteres"
+      error:
+        "La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales",
     });
   }
 
   if (!isValidBasicEmail(cleanEmail)) {
     return res.status(400).json({
-      error: "El email no tiene un formato válido"
+      error: "El email no tiene un formato válido",
     });
   }
 
-  const existingUser = users.find((user) => user.email === cleanEmail);
-
-  if (existingUser) {
+  if (isEmailTaken(cleanEmail)) {
     return res.status(409).json({
-      error: "El email ya está registrado"
+      error: "El email ya está registrado",
     });
   }
 
-  const newId = users.length > 0 // Si el array de usuarios no está vacío, generamos un nuevo id sumando 1 al id más alto existente, si está vacío, el nuevo id será 1
+  const newId =
+    users.length > 0 // Si el array de usuarios no está vacío, generamos un nuevo id sumando 1 al id más alto existente, si está vacío, el nuevo id será 1
       ? Math.max(...users.map((user) => user.id)) + 1
       : 1;
 
@@ -361,25 +412,21 @@ app.patch("/api/users/:id", (req, res) => {
   if (email !== undefined) {
     if (!isNonEmptyString(email)) {
       return res.status(400).json({
-        error: "El email debe ser un texto no vacío"
+        error: "El email debe ser un texto no vacío",
       });
     }
 
-    cleanEmail = email.trim().toLowerCase();
+    cleanEmail = normalizeEmail(email);
 
     if (!isValidBasicEmail(cleanEmail)) {
       return res.status(400).json({
-        error: "El email no tiene un formato válido"
+        error: "El email no tiene un formato válido",
       });
     }
 
-    const emailAlreadyExists = users.some(
-      (user) => user.email === cleanEmail && user.id !== id
-    );
-
-    if (emailAlreadyExists) {
+    if (isEmailTaken(cleanEmail, id)) {
       return res.status(409).json({
-        error: "El email ya está registrado"
+        error: "El email ya está registrado",
       });
     }
   }
@@ -390,25 +437,25 @@ app.patch("/api/users/:id", (req, res) => {
   if (name !== undefined) {
     if (!isNonEmptyString(name)) {
       return res.status(400).json({
-        error: "El nombre debe ser un texto no vacío"
+        error: "El nombre debe ser un texto no vacío",
       });
     }
 
     if (!isValidName(name)) {
       return res.status(400).json({
-        error: "El nombre debe tener al menos dos caracteres"
+        error: "El nombre debe tener al menos dos caracteres",
       });
     }
 
     cleanName = name.trim();
-}
+  }
 
   // Validamos isActive si llega
   if (isActive !== undefined && !isBoolean(isActive)) {
-  return res.status(400).json({
-    error: "isActive debe ser true o false"
-  });
-}
+    return res.status(400).json({
+      error: "isActive debe ser true o false",
+    });
+  }
 
   // Actualizamos los campos del usuario en el array
   const currentUser = users[userIndex];
@@ -586,8 +633,6 @@ app.patch("/api/users/:id/reactivate", (req, res) => {
     data: updatedUser,
   });
 });
-
-
 
 // ==========================================
 // ENDPOINTS DE DEPURACIÓN Y PRUEBAS (DEBUG)
