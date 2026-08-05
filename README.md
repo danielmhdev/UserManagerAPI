@@ -329,6 +329,35 @@ Posibles errores:
 }
 ```
 
+## Códigos de estado utilizados
+
+La API utiliza códigos HTTP para indicar el resultado de cada petición.
+
+| Código | Significado | Uso en el proyecto |
+| ---: | --- | --- |
+| 200 | OK | Consulta, actualización o desactivación correcta |
+| 201 | Created | Usuario creado correctamente |
+| 400 | Bad Request | Datos incorrectos o incompletos |
+| 404 | Not Found | Usuario no encontrado |
+| 409 | Conflict | Email duplicado |
+
+Ejemplo de error 404:
+
+```json
+{
+  "error": "Usuario no encontrado",
+  "id": 999
+}
+```
+
+Ejemplo de error 409:
+
+```json
+{
+  "error": "El email ya está registrado"
+}
+```
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -344,4 +373,5 @@ Posibles errores:
 - [Día 11 - Eliminar o desactivar usuarios en memoria](docs/dia-11-eliminar-desactivar-usuarios.md)
 - [Día 12 - Validación manual básica](docs/dia-12-validacion-manual-basica.md)
 - [Día 13 - Validación de email y duplicados](docs/dia-13-validacion-email-duplicados.md)
+- [Día 14 - Códigos de estado HTTP](docs/dia-14-codigos-estado-http.md)
 
