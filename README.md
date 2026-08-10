@@ -389,6 +389,34 @@ Respuesta:
 }
 ```
 
+## Persistencia
+
+Hasta el día 15, la API trabaja con usuarios en memoria.
+
+Esto significa que los datos se pierden al reiniciar el servidor.
+
+A partir de la siguiente fase, prepararemos una base de datos para guardar los
+usuarios de forma persistente.
+
+Tabla principal prevista:
+
+```text
+users
+```
+
+Campos principales:
+
+```text
+id
+name
+email
+password_hash
+role
+is_active
+created_at
+updated_at
+```
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -406,4 +434,5 @@ Respuesta:
 - [Día 13 - Validación de email y duplicados](docs/dia-13-validacion-email-duplicados.md)
 - [Día 14 - Códigos de estado HTTP](docs/dia-14-codigos-estado-http.md)
 - [Día 15 - Middleware centralizado de errores](docs/dia-15-middleware-errores.md)
+- [Día 16 - Base de datos y persistencia](docs/dia-16-base-datos-persistencia.md)
 
