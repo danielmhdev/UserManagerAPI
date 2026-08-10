@@ -1,6 +1,7 @@
 // Preparación Proyecto y configuración
 
-import express from "express";
+import express, {Request, Response, NextFunction} from "express";
+import { timeStamp } from "node:console";
 
 const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = 3000; // Definimos el puerto en el que escuchará el servidor
@@ -75,9 +76,24 @@ const users: User[] = [
     updatedAt: new Date().toISOString(),
   },
 ];
+// ==========================================
+// CLASE AppError para manejar errores de manera consistente
+// ==========================================
+// Creamos la clase AppError para manejar los errores
+
+class AppError extends Error {
+  statusCode: number;
+  details?: unknown; // Propiedad opcional
+
+  constructor(message: string, statusCode: number = 500, details?: unknown){
+    super(message);
+    this.statusCode = statusCode;
+    this.details = details;
+  }
+}
 
 // ==========================================
-// Funciones auxiliares y middlewares
+// Funciones auxiliares 
 // ==========================================
 // Valida que un valor sea un string no vacío.
 function isNonEmptyString(value: unknown): value is string {
@@ -256,28 +272,29 @@ app.get("/api/users/me", (req, res) => {
 });
 
 // Creamos un endpoint con GET para obtener un usuario por id usando el array
-app.get("/api/users/:id", (req, res) => {
+app.get("/api/users/:id", (req, res, next) => {
   const idParam = req.params.id; // Obtenemos el id del usuario desde los parámetros de la solicitud
   const id = Number(req.params.id); //Convertimos el id a número para poder compararlo con los ids del array de usuarios
 
   if (Number.isNaN(id)) {
     // Si el id no es un número, devolvemos un error 400
-    return res.status(400).json({
-      error: "El ID debe ser un número",
-      receivedId: idParam,
-    });
+    return next(
+      new AppError("El ID debe ser un número", 400,{
+        receivedId: idParam,
+      })
+    );
   }
 
   const user = users.find((user) => user.id === id); // Buscamos el usuario en el array por id
 
   if (!user) {
     // Si no encontramos el usuario, devolvemos un error 404
-    return res.status(404).json({
-      error: "Usuario no encontrado",
-      id,
-    });
+    return next(
+      new AppError("Usuario no encontrado", 404, {
+        id,
+      })
+    );
   }
-
   return res.status(200).json({
     // Si encontramos el usuario, devolvemos el usuario encontrado
     message: "Usuario encontrado",
@@ -286,31 +303,38 @@ app.get("/api/users/:id", (req, res) => {
 });
 
 // Creamos un endpoint con POST para crear un nuevo usuario y añadirlo al array de usuarios
-app.post("/api/users", (req, res) => {
+app.post("/api/users", (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!isNonEmptyString(name)) {
-    return res.status(400).json({
-      error: "El nombre debe ser un texto no vacío",
-    });
+    return next(
+      new AppError("El nombre debe ser un texto no vacio", 400,{
+        receivedName: name
+      })
+    );
   }
 
   if (!isValidName(name)) {
-    return res.status(400).json({
-      error: "El nombre debe tener al menos dos caracteres",
-    });
+    return next(
+      new AppError("El nombre debe tener al menos dos caracteres", 400,{
+        receivedName: name
+      })
+    );
   }
 
   if (!isNonEmptyString(email)) {
-    return res.status(400).json({
-      error: "El email debe ser un texto no vacío",
-    });
+    return next(
+      new AppError("El email debe ser un texto no vacío", 400,{
+        receivedName: email
+      })
+    );
   }
 
   if (!isNonEmptyString(password)) {
-    return res.status(400).json({
-      error: "La contraseña debe ser un texto no vacío",
-    });
+    return next(
+      new AppError("La contraseña debe ser un texto no vacio", 400,{
+      })
+    );
   }
 
   const cleanName = name.trim();
@@ -318,17 +342,20 @@ app.post("/api/users", (req, res) => {
   const cleanPassword = password.trim();
 
   if (!isValidPassword(cleanPassword)) {
-    return res.status(400).json({
-      error:
-        "La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales",
-    });
+    return next(
+      new AppError("La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales", 400,{
+      })
+    );
   }
 
   if (!isValidBasicEmail(cleanEmail)) {
-    return res.status(400).json({
-      error: "El email no tiene un formato válido",
-    });
+    return next(
+      new AppError("El email no tiene un formato valido", 400,{
+        receivedName: email
+      })
+    );
   }
+    
 
   if (isEmailTaken(cleanEmail)) {
     return res.status(409).json({
@@ -361,15 +388,16 @@ app.post("/api/users", (req, res) => {
 });
 
 // Creamos una endpoint PATCH para actualizar un usuario existente del array
-app.patch("/api/users/:id", (req, res) => {
+app.patch("/api/users/:id", (req, res, next) => {
   const idParam = req.params.id;
   const id = Number(idParam);
 
   if (Number.isNaN(id)) {
-    return res.status(400).json({
-      error: "El ID debe ser un número",
-      received: idParam,
-    });
+    return next(
+      new AppError("El ID debe ser un número", 400,{
+        receivedId: idParam,
+      })
+    );
   }
 
   const userIndex = users.findIndex((user) => user.id === id);
@@ -638,6 +666,11 @@ app.patch("/api/users/:id/reactivate", (req, res) => {
 // ENDPOINTS DE DEPURACIÓN Y PRUEBAS (DEBUG)
 // ==========================================
 
+// Creamos un endpoint para probar errores internos con appError
+app.get("/api/debug/error", (req, res, next) => {
+  next(new AppError("Error de prueba interno", 500));
+});
+
 //Creamos un endpoint para probar body
 app.post("/api/debug/body", (req, res) => {
   res.status(200).json({
@@ -724,7 +757,43 @@ app.post("/api/debug/request/headers", (req, res) => {
   });
 });
 
-//Arrancamos el servidor y escuchamos en el puerto definido
+
+// ==========================================
+// Middlewares
+// ==========================================
+// De rutas no encontradas (404)
+function notFoundMiddleware(req: Request, res: Response, next: NextFunction){
+  next(
+    new AppError ("No existe la ruta " + req.originalUrl, 404,));
+}
+// Global de errores
+
+function errorMiddleware(
+  err: Error | AppError,
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) {
+  const isAppError = err instanceof AppError;
+  const statusCode = isAppError ? err.statusCode : 500;
+  const details = isAppError ? err.details : undefined;
+
+  return res.status(statusCode).json({
+    error: isAppError ? err.message : "Error interno del servidor",
+    statusCode,
+    details,
+    path: req.originalUrl,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  });
+}
+
+// ==========================================
+//Arrancamos el servidor escuchando en el puerto definido, y añadimos los middlewares de error y ruta no encontrada
+// ==========================================
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
+
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });

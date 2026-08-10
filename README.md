@@ -357,6 +357,37 @@ Ejemplo de error 409:
   "error": "El email ya está registrado"
 }
 ```
+## Gestión centralizada de errores
+
+La API utiliza un middleware global para devolver errores con un formato común.
+
+Formato general:
+
+```json
+{
+  "error": "Mensaje del error",
+  "statusCode": 400,
+  "details": {},
+  "path": "/api/users/abc",
+  "method": "GET",
+  "timestamp": "2026-01-01T10:00:00.000Z"
+}
+```
+
+También se ha añadido un middleware para rutas no encontradas:
+
+```http
+GET /api/ruta-inventada
+```
+
+Respuesta:
+
+```json
+{
+  "error": "Ruta no encontrada",
+  "statusCode": 404
+}
+```
 
 ## Documentación del reto
 
@@ -374,4 +405,5 @@ Ejemplo de error 409:
 - [Día 12 - Validación manual básica](docs/dia-12-validacion-manual-basica.md)
 - [Día 13 - Validación de email y duplicados](docs/dia-13-validacion-email-duplicados.md)
 - [Día 14 - Códigos de estado HTTP](docs/dia-14-codigos-estado-http.md)
+- [Día 15 - Middleware centralizado de errores](docs/dia-15-middleware-errores.md)
 

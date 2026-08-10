@@ -126,7 +126,7 @@ Indica que el servidor **sí sabe quién eres** (estás correctamente autenticad
 
 ---
 
-### Resumen para recordar
+### Resumen 
 
 | Código | Concepto principal | Pregunta que hace el servidor | Ejemplo en la vida real |
 | --- | --- | --- | --- |
