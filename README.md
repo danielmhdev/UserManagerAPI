@@ -416,6 +416,44 @@ is_active
 created_at
 updated_at
 ```
+## Base de datos con Docker Compose
+
+El proyecto utiliza Docker Compose para levantar PostgreSQL y Adminer.
+
+Servicios:
+
+```text
+postgres  -> Base de datos PostgreSQL
+adminer   -> Interfaz web para consultar la base de datos
+```
+
+Comando para arrancar:
+
+```bash
+docker compose up -d
+```
+
+Comando para parar:
+
+```bash
+docker compose down
+```
+
+Adminer:
+
+```text
+http://localhost:8080
+```
+
+Datos de conexión:
+
+```text
+Sistema: PostgreSQL
+Servidor: postgres
+Usuario: usermanager
+Contraseña: usermanager_password
+Base de datos: usermanager_db
+```
 
 ## Documentación del reto
 
@@ -435,4 +473,5 @@ updated_at
 - [Día 14 - Códigos de estado HTTP](docs/dia-14-codigos-estado-http.md)
 - [Día 15 - Middleware centralizado de errores](docs/dia-15-middleware-errores.md)
 - [Día 16 - Base de datos y persistencia](docs/dia-16-base-datos-persistencia.md)
+- [Día 17 - PostgreSQL con Docker Compose](docs/dia-17-postgresql-docker-compose.md)
 
