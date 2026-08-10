@@ -455,6 +455,34 @@ Contraseña: usermanager_password
 Base de datos: usermanager_db
 ```
 
+## Modelo persistente User
+
+El modelo principal del proyecto será `User`.
+
+Campos principales:
+
+```text
+id
+name
+email
+passwordHash
+role
+isActive
+createdAt
+updatedAt
+```
+
+Reglas importantes:
+
+```text
+email único
+passwordHash nunca se devuelve
+role por defecto USER
+isActive por defecto true
+createdAt y updatedAt automáticos
+```
+
+Este diseño se convertirá más adelante en un modelo Prisma.
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -474,4 +502,5 @@ Base de datos: usermanager_db
 - [Día 15 - Middleware centralizado de errores](docs/dia-15-middleware-errores.md)
 - [Día 16 - Base de datos y persistencia](docs/dia-16-base-datos-persistencia.md)
 - [Día 17 - PostgreSQL con Docker Compose](docs/dia-17-postgresql-docker-compose.md)
+- [Día 18 - Diseño del modelo persistente User](docs/dia-18-diseno-modelo-persistente-user.md)
 
