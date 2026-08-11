@@ -1,7 +1,6 @@
 // Preparación Proyecto y configuración
 
 import express, {Request, Response, NextFunction} from "express";
-import { timeStamp } from "node:console";
 
 const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = 3000; // Definimos el puerto en el que escuchará el servidor

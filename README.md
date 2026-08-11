@@ -511,6 +511,41 @@ flowchart LR
 ```
 
 SQL directo, TypeORM y Sequelize se han considerado como alternativas, pero no serán el camino principal del reto.
+
+## Prisma
+
+Instalación:
+
+```bash
+npm install -D prisma
+npm install @prisma/client
+```
+
+Inicialización:
+
+```bash
+npx prisma init --datasource-provider postgresql
+```
+
+Archivos importantes:
+
+```text
+prisma/schema.prisma
+.env
+.env.example
+```
+
+Validar esquema:
+
+```bash
+npx prisma validate
+```
+
+Generar cliente:
+
+```bash
+npx prisma generate
+```
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -532,4 +567,6 @@ SQL directo, TypeORM y Sequelize se han considerado como alternativas, pero no s
 - [Día 17 - PostgreSQL con Docker Compose](docs/dia-17-postgresql-docker-compose.md)
 - [Día 18 - Diseño del modelo persistente User](docs/dia-18-diseno-modelo-persistente-user.md)
 - [Día 19 - ORM o acceso a datos](docs/dia-19-orm-acceso-datos.md)
+- [Día 20 - Instalación y configuración inicial de Prisma](docs/dia-20-instalacion-prisma.md)
+
 
