@@ -481,8 +481,36 @@ role por defecto USER
 isActive por defecto true
 createdAt y updatedAt automáticos
 ```
-
 Este diseño se convertirá más adelante en un modelo Prisma.
+
+## ORM y acceso a datos
+
+El proyecto usará Prisma como ORM principal para comunicarse con PostgreSQL.
+
+Se ha elegido Prisma porque:
+
+```text
+Encaja bien con TypeScript.
+Permite definir modelos claros.
+Incluye migraciones.
+Genera un cliente tipado.
+Permite explorar datos con Prisma Studio.
+```
+
+Flujo previsto:
+
+```mermaid
+API Express → Repository → Prisma → PostgreSQL
+```
+
+```mermaid
+flowchart LR
+    A[API Express ] --> B[Repository]
+    B --> C[Prisma]
+    C --> D[ PostgreSQL]
+```
+
+SQL directo, TypeORM y Sequelize se han considerado como alternativas, pero no serán el camino principal del reto.
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -503,4 +531,5 @@ Este diseño se convertirá más adelante en un modelo Prisma.
 - [Día 16 - Base de datos y persistencia](docs/dia-16-base-datos-persistencia.md)
 - [Día 17 - PostgreSQL con Docker Compose](docs/dia-17-postgresql-docker-compose.md)
 - [Día 18 - Diseño del modelo persistente User](docs/dia-18-diseno-modelo-persistente-user.md)
+- [Día 19 - ORM o acceso a datos](docs/dia-19-orm-acceso-datos.md)
 
