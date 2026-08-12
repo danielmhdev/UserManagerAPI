@@ -546,6 +546,39 @@ Generar cliente:
 ```bash
 npx prisma generate
 ```
+
+## Modelo Prisma User
+
+El modelo principal del proyecto será `User`.
+
+```prisma
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+```
+
+Reglas principales:
+
+```text
+email único
+passwordHash obligatorio
+role por defecto USER
+isActive por defecto true
+createdAt automático
+updatedAt automático al modificar
+```
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -568,5 +601,6 @@ npx prisma generate
 - [Día 18 - Diseño del modelo persistente User](docs/dia-18-diseno-modelo-persistente-user.md)
 - [Día 19 - ORM o acceso a datos](docs/dia-19-orm-acceso-datos.md)
 - [Día 20 - Instalación y configuración inicial de Prisma](docs/dia-20-instalacion-prisma.md)
+- [Día 21 - Modelo Prisma User](docs/dia-21-modelo-prisma-user.md)
 
 
