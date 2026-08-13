@@ -579,6 +579,33 @@ isActive por defecto true
 createdAt automático
 updatedAt automático al modificar
 ```
+
+## Migraciones con Prisma
+
+El proyecto usa Prisma Migrate para versionar la estructura de la base de datos.
+
+Primera migración:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Esto genera:
+
+```text
+prisma/migrations/<timestamp>_init/migration.sql
+```
+
+Y crea en PostgreSQL:
+
+```text
+User
+_prisma_migrations
+```
+
+La tabla `User` almacena los usuarios de la aplicación.
+
+La tabla `_prisma_migrations` guarda el historial interno de migraciones de Prisma.
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -602,5 +629,6 @@ updatedAt automático al modificar
 - [Día 19 - ORM o acceso a datos](docs/dia-19-orm-acceso-datos.md)
 - [Día 20 - Instalación y configuración inicial de Prisma](docs/dia-20-instalacion-prisma.md)
 - [Día 21 - Modelo Prisma User](docs/dia-21-modelo-prisma-user.md)
+- [Día 22 - Primera migración con Prisma](docs/dia-22-primera-migracion-prisma.md)
 
 
