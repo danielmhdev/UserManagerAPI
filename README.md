@@ -677,6 +677,38 @@ Nota:
 ```text
 Los passwordHash son temporales hasta implementar bcrypt en la fase de seguridad.
 ```
+
+## Consultas básicas con Prisma
+
+La API ya puede consultar usuarios desde PostgreSQL usando Prisma Client.
+
+Archivo de cliente compartido:
+
+```text
+src/prisma.ts
+```
+
+Este proyecto usa Prisma 7 con adapter PostgreSQL:
+
+```ts
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "./generated/prisma/client";
+```
+
+Rutas temporales de prueba:
+
+| Método | Ruta | Acción |
+| --- | --- |---|
+| GET | `/api/debug/prisma/users` | Listar usuarios |
+| GET | `/api/debug/prisma/users-active` | Listar usuarios activos |
+| GET | `/api/debug/prisma/users/:id` | Buscar usuario por ID |
+| POST | `/api/debug/prisma/users` | Crear usuario |
+
+Regla:
+
+```text
+Las respuestas no deben incluir passwordHash.
+```
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -702,5 +734,6 @@ Los passwordHash son temporales hasta implementar bcrypt en la fase de seguridad
 - [Día 21 - Modelo Prisma User](docs/dia-21-modelo-prisma-user.md)
 - [Día 22 - Primera migración con Prisma](docs/dia-22-primera-migracion-prisma.md)
 - [Día 23 - Prisma Studio](docs/dia-23-prisma-studio.md)
-[Día 24 - Seed de datos iniciales](docs/dia-24-seed-datos-iniciales.md)
+- [Día 24 - Seed de datos iniciales](docs/dia-24-seed-datos-iniciales.md)
+- [Día 25 - Consultas básicas con Prisma Client](docs/dia-25-consultas-basicas-prisma.md)
 
