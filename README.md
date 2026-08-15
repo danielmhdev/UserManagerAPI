@@ -606,6 +606,40 @@ _prisma_migrations
 La tabla `User` almacena los usuarios de la aplicación.
 
 La tabla `_prisma_migrations` guarda el historial interno de migraciones de Prisma.
+
+## Prisma Studio
+
+Prisma Studio permite explorar visualmente los datos de la base de datos.
+
+Comando:
+
+```bash
+npx prisma studio
+```
+
+O mediante script:
+
+```bash
+npm run prisma:studio
+```
+
+URL habitual:
+
+```text
+http://localhost:5555
+```
+
+Uso en el proyecto:
+
+```text
+Comprobar tablas.
+Revisar usuarios.
+Ver datos iniciales del seed.
+Comprobar cambios realizados desde la API.
+Detectar errores de persistencia.
+```
+
+Prisma Studio es una herramienta de desarrollo. La gestión real de usuarios se hará desde la API.
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -630,5 +664,6 @@ La tabla `_prisma_migrations` guarda el historial interno de migraciones de Pris
 - [Día 20 - Instalación y configuración inicial de Prisma](docs/dia-20-instalacion-prisma.md)
 - [Día 21 - Modelo Prisma User](docs/dia-21-modelo-prisma-user.md)
 - [Día 22 - Primera migración con Prisma](docs/dia-22-primera-migracion-prisma.md)
+- [Día 23 - Prisma Studio](docs/dia-23-prisma-studio.md)
 
 
