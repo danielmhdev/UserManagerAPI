@@ -640,6 +640,43 @@ Detectar errores de persistencia.
 ```
 
 Prisma Studio es una herramienta de desarrollo. La gestión real de usuarios se hará desde la API.
+
+
+## Seed de datos iniciales
+
+El proyecto incluye un seed para crear usuarios iniciales.
+
+Archivo:
+
+```text
+prisma/seed.ts
+```
+
+Ejecutar seed:
+
+```bash
+npx prisma db seed
+```
+
+O mediante script:
+
+```bash
+npm run prisma:seed
+```
+
+Usuarios iniciales:
+
+| Email | Role | Estado |
+| --- | --- | --- |
+| `admin@email.com` | `ADMIN` | activo |
+| `user@email.com` | `USER` | activo |
+| `inactive@email.com` | `USER` | inactivo |
+
+Nota:
+
+```text
+Los passwordHash son temporales hasta implementar bcrypt en la fase de seguridad.
+```
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -665,5 +702,5 @@ Prisma Studio es una herramienta de desarrollo. La gestión real de usuarios se 
 - [Día 21 - Modelo Prisma User](docs/dia-21-modelo-prisma-user.md)
 - [Día 22 - Primera migración con Prisma](docs/dia-22-primera-migracion-prisma.md)
 - [Día 23 - Prisma Studio](docs/dia-23-prisma-studio.md)
-
+[Día 24 - Seed de datos iniciales](docs/dia-24-seed-datos-iniciales.md)
 
