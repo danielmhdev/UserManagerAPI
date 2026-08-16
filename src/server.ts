@@ -5,6 +5,7 @@ import express, {Request, Response, NextFunction} from "express";
 import { healthRouter } from "./routes/health.routes";
 import { debugPrismaRouter } from "./routes/debug-prisma.routes";
 import { authRouter } from "./routes/auth.routes";
+import { AppError } from "./errors/AppError";
 
 const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = process.env.PORT ||3000; // Definimos el puerto en el que escuchará el servidor
@@ -82,22 +83,6 @@ const users: User[] = [
     updatedAt: new Date().toISOString(),
   },
 ];
-// ==========================================
-// CLASE AppError para manejar errores de manera consistente
-// ==========================================
-// Creamos la clase AppError para manejar los errores
-
-class AppError extends Error {
-  statusCode: number;
-  details?: unknown; // Propiedad opcional
-
-  constructor(message: string, statusCode: number = 500, details?: unknown){
-    super(message);
-    this.statusCode = statusCode;
-    this.details = details;
-  }
-}
-
 // ==========================================
 // Funciones auxiliares 
 // ==========================================

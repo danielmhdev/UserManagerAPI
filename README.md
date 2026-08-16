@@ -767,6 +767,40 @@ createDebugUser
 ```
 
 Esta separación prepara el proyecto para añadir servicios y repositorios.
+
+## Servicios
+
+El proyecto ya incluye una capa de servicios.
+
+Carpeta creada:
+
+```text
+src/services/
+```
+
+Archivo principal:
+
+```text
+src/services/user.service.ts
+```
+
+Los servicios contienen lógica de negocio como:
+
+- Validar datos.
+- Normalizar email.
+- Comprobar usuario inexistente.
+- Gestionar email duplicado.
+- Crear usuarios.
+
+El controlador queda más limpio y llama a funciones como:
+
+```ts
+getUsersService()
+getUserByIdService(id)
+createDebugUserService(req.body)
+```
+
+En este punto, el servicio todavía usa Prisma directamente. En el siguiente paso se añadirá una capa de repositorios.
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -796,5 +830,6 @@ Esta separación prepara el proyecto para añadir servicios y repositorios.
 - [Día 25 - Consultas básicas con Prisma Client](docs/dia-25-consultas-basicas-prisma.md)
 - [Día 26 - Separar rutas](docs/dia-26-separar-rutas.md)
 - [Día 27 - Controladores](docs/dia-27-controladores.md)
+- [Día 28 - Servicios](docs/dia-28-servicios.md)
 
 
