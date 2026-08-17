@@ -830,6 +830,34 @@ Flujo actual de la API: `Route → Controller → Service → Repository → Pri
 
 El servicio ya no usa Prisma directamente. Ahora el acceso a datos queda concentrado en el repositorio.
 
+## CRUD persistente de usuarios
+
+La API ya tiene rutas reales para gestionar usuarios con PostgreSQL y Prisma.
+
+Rutas principales:
+
+| Método | Ruta | Acción |
+| --- | --- |---|
+| GET | `/api/users` | Listar usuarios |
+| GET | `/api/users/:id` | Consultar usuario |
+| POST | `/api/users` | Crear usuario |
+| PATCH | `/api/users/:id` | Actualizar usuario |
+| DELETE | `/api/users/:id` | Desactivar usuario |
+
+Flujo interno:
+
+```text
+Route → Controller → Service → Repository → Prisma → PostgreSQL
+```
+
+El borrado es lógico:
+
+```text
+DELETE /api/users/:id → isActive = false
+```
+
+La API nunca devuelve `passwordHash`.
+
 ## Documentación del reto
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
 - [Día 2 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)
@@ -860,5 +888,6 @@ El servicio ya no usa Prisma directamente. Ahora el acceso a datos queda concent
 - [Día 27 - Controladores](docs/dia-27-controladores.md)
 - [Día 28 - Servicios](docs/dia-28-servicios.md)
 - [Día 29 - Repositorio con Prisma](docs/dia-29-repositorio-prisma.md)
+- [Día 30 - CRUD persistente ordenado](docs/dia-30-crud-persistente-ordenado.md)
 
 

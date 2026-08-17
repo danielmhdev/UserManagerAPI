@@ -19,6 +19,14 @@ type CreateUserData = {
   role?: Role;
   isActive?: boolean;
 };
+
+// Datos que el repo necesita para actualizar el usuario.
+type UpdateUserData = {
+  name?: string;
+  email?: string;
+  isActive?: boolean;
+};
+
 // Devuelve todos los usuario de la base de datos
 export function findAllUsers() {
   return prisma.user.findMany({
@@ -92,6 +100,42 @@ export function findUserByEmail(email: string) {
 export function createUser(data: CreateUserData) {
   return prisma.user.create({
     data,
+    select: userSafeSelect
+  });
+}
+// Actualizamos usuarios
+export function updateUser(id: number, data: UpdateUserData) {
+  return prisma.user.update({
+    where: {
+      id
+    },
+    data,
+    select: userSafeSelect
+  });
+}
+
+// Eliminamos usuarios
+export function deactivateUser(id: number) {
+  return prisma.user.update({
+    where: {
+      id
+    },
+    data: {
+      isActive: false
+    },
+    select: userSafeSelect
+  });
+}
+
+// Reactivamos usuarios
+export function reactivateUser(id: number) {
+  return prisma.user.update({
+    where: {
+      id
+    },
+    data: {
+      isActive: true
+    },
     select: userSafeSelect
   });
 }

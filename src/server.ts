@@ -4,6 +4,7 @@ import express, {Request, Response, NextFunction} from "express";
 
 import { healthRouter } from "./routes/health.routes";
 import { debugPrismaRouter } from "./routes/debug-prisma.routes";
+import { userRouter } from "./routes/user.routes";
 import { authRouter } from "./routes/auth.routes";
 import { AppError } from "./errors/AppError";
 
@@ -14,6 +15,7 @@ app.use(express.json()); //Permite leer JSON en las solicitudes entrantes(POST,P
 app.use("/api/health", healthRouter); // Añadimos el router de salud a la ruta /health
 app.use("/api/debug/prisma", debugPrismaRouter); // Añadimos el router de depuración de Prisma a la ruta /api/debug/prisma
 app.use("/api/auth", authRouter); // Añadimos el router de autenticación a la ruta /api/auth
+app.use("/api/users", userRouter); // Añadimos el router de usuarios a la ruta /api/users
 // ====================================
 // BASE DE DATOS SIMULADA (En memoria)
 // ====================================

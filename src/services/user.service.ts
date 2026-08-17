@@ -1,25 +1,31 @@
 // Llamamos al repositorio para obtener los datos y procesar cualquier regla del negocio
 import { AppError } from "../errors/AppError";
-import { Role } from "../generated/prisma";
-
 import {
   createUser,
+  deactivateUser,
+  reactivateUser,
   findActiveUsers,
   findAllUsers,
   findInactiveUsers,
   findUserByEmail,
   findUserById,
   findUsersByRole,
-  usersCount
+  usersCount,
+  updateUser
 } from "../repositories/user.repository";
 
 // Definimos un tipo para la entrada de creación de usuario 
-type CreateDebugUserInput = {
+type CreateUserInput = {
   name: unknown;
   email: unknown;
   password: unknown;
 };
-
+// Definimos un tipo para la entrada de actualización de usuario
+type UpdateUserInput = {
+  name?: unknown;
+  email?: unknown;
+  isActive?: unknown;
+};
 //================================
 //Funciones auxiliares para validar y normalizar datos de usuario
 //================================
@@ -39,7 +45,7 @@ function isValidBasicEmail(email: string): boolean {
 // Funciones del de usuario
 //===============================
 // Obtiene todos los usuarios de forma segura.
-export async function getUsersService() {
+export async function listUsersService() {
   return findAllUsers();
 }
 // Obtiene todos los usuarios activos de forma segura.
@@ -59,12 +65,12 @@ export async function getUsersCountService() {
 export async function getUsersByRoleService(role: string) {
   const cleanRole = String(role).trim().toUpperCase();
   // Validación de entrada (responsabilidad del servicio)
-  if (role !== "USER" && role !== "ADMIN") {
+  if (cleanRole !== "USER" && cleanRole !== "ADMIN") {
      throw new AppError("El rol debe ser 'USER' o 'ADMIN'", 400, {
       received: cleanRole,
     })
   }
-  const usersByRole = await findUsersByRole(cleanRole as Role);
+  const usersByRole = await findUsersByRole(cleanRole);
 
 
   return {usersByRole, cleanRole};
@@ -96,8 +102,8 @@ export async function getUserByEmailService(email: string) {
     return data;
 }
 
-// Crea un usuario de depuración con validación y manejo de errores.
-export async function createDebugUserService(input: CreateDebugUserInput) {
+// Crea un usuario con validación y manejo de errores.
+export async function createUserService(input: CreateUserInput) {
   const { name, email, password } = input;
 
   if (!isNonEmptyString(name)) {
@@ -138,3 +144,94 @@ export async function createDebugUserService(input: CreateDebugUserInput) {
     passwordHash: `hash_temporal_${cleanPassword}`
   });
 }
+
+// Actualiza un usuario con validación y manejo de errores.
+export async function updateUserService(id: number, input: UpdateUserInput) {
+  const currentUser = await findUserById(id);
+
+  if (!currentUser) {
+    throw new AppError("Usuario no encontrado", 404, { id });
+  }
+
+  const dataToUpdate: {
+    name?: string;
+    email?: string;
+    isActive?: boolean;
+  } = {};
+
+  if (input.name !== undefined) {
+    if (!isNonEmptyString(input.name)) {
+      throw new AppError("El nombre debe ser un texto no vacío", 400);
+    }
+
+    dataToUpdate.name = input.name.trim();
+  }
+
+  if (input.email !== undefined) {
+    if (!isNonEmptyString(input.email)) {
+      throw new AppError("El email debe ser un texto no vacío", 400);
+    }
+
+    const cleanEmail = normalizeEmail(input.email);
+
+    if (!isValidBasicEmail(cleanEmail)) {
+      throw new AppError("El email no tiene un formato válido", 400);
+    }
+
+    const existingUser = await findUserByEmail(cleanEmail);
+
+    if (existingUser && existingUser.id !== id) {
+      throw new AppError("El email ya está registrado", 409, {
+        email: cleanEmail
+      });
+    }
+
+    dataToUpdate.email = cleanEmail;
+  }
+
+  if (input.isActive !== undefined) {
+    if (typeof input.isActive !== "boolean") {
+      throw new AppError("isActive debe ser true o false", 400);
+    }
+
+    dataToUpdate.isActive = input.isActive;
+  }
+
+  const hasChanges = Object.keys(dataToUpdate).length > 0;
+
+  if (!hasChanges) {
+    throw new AppError("Debes enviar al menos un campo para actualizar", 400);
+  }
+
+  return updateUser(id, dataToUpdate);
+}
+
+// Desactiva un usuario
+export async function deactivateUserService(id: number) {
+  const user = await findUserById(id);
+
+  if (!user) {
+    throw new AppError("Usuario no encontrado", 404, { id });
+  }
+
+  if (!user.isActive) {
+    throw new AppError("El usuario ya estaba desactivado", 409, { id });
+  }
+
+  return deactivateUser(id);
+}
+
+// Reactiva un usuario
+export async function reactivateUserService(id: number) {
+  const user = await findUserById(id);
+
+  if (!user) {
+    throw new AppError("Usuario no encontrado", 404, { id });
+  }
+
+  if (user.isActive) {
+    throw new AppError("El usuario ya estaba activo", 409, { id });
+  }
+
+  return reactivateUser(id);
+} 

@@ -1,31 +1,62 @@
 // Los controladores de usuario manejan las solicitudes HTTP y delegan la lógica de negocio a los servicios.
 import { Request, Response, NextFunction } from "express";
 import {
-  createDebugUserService,
+  createUserService,
   getActiveUsersService,
   getInactiveUsersService,
   getUserByIdService,
   getUserByEmailService,
-  getUsersService,
+  listUsersService,
   getUsersCountService,
-  getUsersByRoleService
+  getUsersByRoleService,
+  updateUserService,
+  deactivateUserService,
+  reactivateUserService
 } from "../services/user.service";
 import { AppError } from "../errors/AppError";
 
 // Función de listado de usuarios 
-export async function getUsersController(
+export async function listUsersController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const users = await getUsersService(); // Llamamos al servicio para obtener todos los usuarios de forma segura
+    const activeQuery = req.query.active; // Obtenemos el parámetro de consulta 'active' de la solicitud http. Este parámetro puede ser 'true', 'false' o no estar presente.
+    if (!activeQuery) {
+      const users = await listUsersService();// Llamamos al servicio para obtener todos los usuarios de forma segura
+      return res.status(200).json({
+        message: "Usuarios obtenidos correctamente",
+        total: users.length,
+        data: users
+      });
+    }
+     if(activeQuery !== "true" && activeQuery !== "false") {
+      throw new AppError("El parámetro 'active' solo puede ser 'true' o 'false'", 400, {
+            received: activeQuery
+        })
+    }
 
-    return res.status(200).json({
-      message: "Usuarios obtenidos",
-      total: users.length,
-      data: users
-    });
+    if(activeQuery === "true") {
+      const activeUsers = await getActiveUsersService();
+
+      return res.status(200).json({
+        message: "Lista de usuarios activos",
+        total: activeUsers.length,
+        data: activeUsers
+      });
+    }
+
+    if(activeQuery === "false") {
+      const inactiveUsers = await getInactiveUsersService();
+
+      return res.status(200).json({
+        message: "Lista de usuarios inactivos",
+        total: inactiveUsers.length,
+        data: inactiveUsers
+      });
+    }
+    
   } catch (error) {
     next(error);
   }
@@ -40,7 +71,7 @@ export async function getActiveUsersController( // Es async porque asi podemos u
     const users = await getActiveUsersService();
 
     return res.status(200).json({
-      message: "Usuarios activos obtenidos",
+      message: "Usuarios activos obtenidos correctamente",
       total: users.length,
       data: users
     });
@@ -58,7 +89,7 @@ export async function getInactiveUsersController(
     const users = await getInactiveUsersService();
 
     return res.status(200).json({
-      message: "Usuarios Inactivos obtenidos",
+      message: "Usuarios Inactivos obtenidos correctamente",
       total: users.length,
       data: users
     });
@@ -147,18 +178,95 @@ export async function getUserByIdController(
   }
 }
 
-// Endpoint para crear un usuario de prueba  
-export async function createDebugUserController(
+// Funcion para crear un usuario de prueba  
+export async function createUserController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const createdUser = await createDebugUserService(req.body);
+    const createdUser = await createUserService(req.body);
 
     return res.status(201).json({
       message: "Usuario creado",
       data: createdUser
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+// Función para actualizar un usuario existente
+export async function updateUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      throw new AppError("El ID debe ser un número", 400, {
+        received: req.params.id
+      });
+    }
+
+    const updatedUser = await updateUserService(id, req.body);
+
+    return res.status(200).json({
+      message: "Usuario actualizado correctamente",
+      data: updatedUser
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Función para desactivar un usuario existente
+export async function deleteUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      throw new AppError("El ID debe ser un número", 400, {
+        received: req.params.id
+      });
+    }
+
+    const deactivatedUser = await deactivateUserService(id);
+
+    return res.status(200).json({
+      message: "Usuario desactivado correctamente",
+      data: deactivatedUser
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Función para reactivar un usuario existente
+export async function reactivateUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      throw new AppError("El ID debe ser un número", 400, {
+        received: req.params.id
+      });
+    }
+
+    const reactivatedUser = await reactivateUserService(id);
+
+    return res.status(200).json({
+      message: "Usuario reactivado correctamente",
+      data: reactivatedUser
     });
   } catch (error) {
     next(error);
