@@ -1,17 +1,17 @@
-// Los servicios de usuario encapsulan la lógica de negocio.
-
-import { prisma } from "../prisma";
+// Llamamos al repositorio para obtener los datos y procesar cualquier regla del negocio
 import { AppError } from "../errors/AppError";
+import { Role } from "../generated/prisma";
 
-const userSafeSelect = {
-  id: true,
-  name: true,
-  email: true,
-  role: true,
-  isActive: true,
-  createdAt: true,
-  updatedAt: true
-} as const;
+import {
+  createUser,
+  findActiveUsers,
+  findAllUsers,
+  findInactiveUsers,
+  findUserByEmail,
+  findUserById,
+  findUsersByRole,
+  usersCount
+} from "../repositories/user.repository";
 
 // Definimos un tipo para la entrada de creación de usuario 
 type CreateDebugUserInput = {
@@ -40,51 +40,38 @@ function isValidBasicEmail(email: string): boolean {
 //===============================
 // Obtiene todos los usuarios de forma segura.
 export async function getUsersService() {
-  return prisma.user.findMany({
-    select: userSafeSelect,
-    orderBy: {
-      id: "asc"
-    }
-  });
+  return findAllUsers();
 }
 // Obtiene todos los usuarios activos de forma segura.
 export async function getActiveUsersService() {
-  return prisma.user.findMany({
-    where: {
-      isActive: true
-    },
-    select: userSafeSelect,
-    orderBy: {
-      id: "asc"
-    }
-  });
+  return findActiveUsers();
 }
-
+// Obtiene todos los usuarios inactivos de forma segura.
+export async function getInactiveUsersService() {
+  return findInactiveUsers();
+}
 // Obtiene el conteo total de usuarios.
 export async function getUsersCountService() {
-  return prisma.user.count();
+  return usersCount();
 }
 
 // Obtiene usuarios filtrados por rol de forma segura.
-export async function getUsersByRoleService(role: "USER" | "ADMIN") {
-  return prisma.user.findMany({
-    where: {
-      role
-    },
-    select: userSafeSelect,
-    orderBy: {
-      id: "asc"
-    }
-  });
+export async function getUsersByRoleService(role: string) {
+  const cleanRole = String(role).trim().toUpperCase();
+  // Validación de entrada (responsabilidad del servicio)
+  if (role !== "USER" && role !== "ADMIN") {
+     throw new AppError("El rol debe ser 'USER' o 'ADMIN'", 400, {
+      received: cleanRole,
+    })
+  }
+  const usersByRole = await findUsersByRole(cleanRole as Role);
+
+
+  return {usersByRole, cleanRole};
 }
 // Obtiene un usuario por su ID de forma segura.
 export async function getUserByIdService(id: number) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id
-    },
-    select: userSafeSelect
-  });
+  const user = await findUserById(id);
 
   if (!user) {
     throw new AppError("Usuario no encontrado", 404, { id });
@@ -95,19 +82,20 @@ export async function getUserByIdService(id: number) {
 
 // Buscamos el usuario por email de forma segura.
 export async function getUserByEmailService(email: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email
-    },
-    select: userSafeSelect
-  });
+    
+    const cleanEmail = normalizeEmail(email);
 
-  if (!user) {
-    throw new AppError("Usuario no encontrado", 404, { email });
-  }
+    const data = await findUserByEmail(email);
 
-  return user;
+    if(!data) {
+        throw new AppError("Usuario no encontrado", 404, {
+            email: cleanEmail
+        })
+    }
+
+    return data;
 }
+
 // Crea un usuario de depuración con validación y manejo de errores.
 export async function createDebugUserService(input: CreateDebugUserInput) {
   const { name, email, password } = input;
@@ -136,22 +124,17 @@ export async function createDebugUserService(input: CreateDebugUserInput) {
     throw new AppError("La contraseña debe tener al menos 6 caracteres", 400);
   }
 
-  try {
-    return await prisma.user.create({
-      data: {
-        name: cleanName,
-        email: cleanEmail,
-        passwordHash: `hash_temporal_${cleanPassword}`
-      },
-      select: userSafeSelect
-    });
-  } catch (error: any) {
-    if (error.code === "P2002") {
-      throw new AppError("El email ya está registrado", 409, {
-        email: cleanEmail
-      });
-    }
+  const existingUser = await findUserByEmail(cleanEmail);
 
-    throw error;
+  if (existingUser) {
+    throw new AppError("El email ya está registrado", 409, {
+      email: cleanEmail
+    });
   }
+
+  return createUser({
+    name: cleanName,
+    email: cleanEmail,
+    passwordHash: `hash_temporal_${cleanPassword}`
+  });
 }

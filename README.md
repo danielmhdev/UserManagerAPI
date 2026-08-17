@@ -801,8 +801,36 @@ createDebugUserService(req.body)
 ```
 
 En este punto, el servicio todavía usa Prisma directamente. En el siguiente paso se añadirá una capa de repositorios.
-## Documentación del reto
 
+## Repositorios
+
+El proyecto ya incluye una capa de repositorios.
+
+Carpeta creada:
+
+```text
+src/repositories/
+```
+
+Archivo principal:
+
+```text
+src/repositories/user.repository.ts
+```
+
+Funciones actuales:
+
+- `findAllUsers`
+- `findActiveUsers`
+- `findUserById`
+- `findUserByEmail`
+- `createUser`
+
+Flujo actual de la API: `Route → Controller → Service → Repository → Prisma → PostgreSQL`.
+
+El servicio ya no usa Prisma directamente. Ahora el acceso a datos queda concentrado en el repositorio.
+
+## Documentación del reto
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
 - [Día 2 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)
 - [Día 3 - Primer Endpoint](docs/dia-03-primer-endpoint.md)
@@ -831,5 +859,6 @@ En este punto, el servicio todavía usa Prisma directamente. En el siguiente pas
 - [Día 26 - Separar rutas](docs/dia-26-separar-rutas.md)
 - [Día 27 - Controladores](docs/dia-27-controladores.md)
 - [Día 28 - Servicios](docs/dia-28-servicios.md)
+- [Día 29 - Repositorio con Prisma](docs/dia-29-repositorio-prisma.md)
 
 

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createDebugUserController,
   getActiveUsersController,
+  getInactiveUsersController,
   getUserByIdController,
   getUsersController,
   getUsersByRoleController,
@@ -14,8 +15,11 @@ export const debugPrismaRouter = Router();
 // Endpoint para obtener listado de todos los usuarios usando Prisma
 debugPrismaRouter.get("/users", getUsersController);
 
-// Rutas de depuración para Prisma
+// Rutas para obtener usuarios activos
 debugPrismaRouter.get("/users-active", getActiveUsersController);
+
+//Ruta para obtener usuarios inactivos
+debugPrismaRouter.get("/users-inactive", getInactiveUsersController);
 
 // Endpoint de conteo total de usuarios usando Prisma
 debugPrismaRouter.get("/users-count", getUsersCountController);

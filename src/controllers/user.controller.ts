@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   createDebugUserService,
   getActiveUsersService,
+  getInactiveUsersService,
   getUserByIdService,
   getUserByEmailService,
   getUsersService,
@@ -11,7 +12,7 @@ import {
 } from "../services/user.service";
 import { AppError } from "../errors/AppError";
 
-// Función de listado de usuarios usando Prisma
+// Función de listado de usuarios 
 export async function getUsersController(
   req: Request,
   res: Response,
@@ -21,7 +22,7 @@ export async function getUsersController(
     const users = await getUsersService(); // Llamamos al servicio para obtener todos los usuarios de forma segura
 
     return res.status(200).json({
-      message: "Usuarios obtenidos con Prisma",
+      message: "Usuarios obtenidos",
       total: users.length,
       data: users
     });
@@ -29,9 +30,9 @@ export async function getUsersController(
     next(error);
   }
 }
-// Función para obtener todos los usuarios activos usando Prisma
+// Función para obtener todos los usuarios activos 
 export async function getActiveUsersController( // Es async porque asi podemos usar await dentro de la funcion para esperar a que la promesa de prisma.user.findMany se resuelva antes de continuar con la ejecución del código.
-req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -39,7 +40,7 @@ req: Request,
     const users = await getActiveUsersService();
 
     return res.status(200).json({
-      message: "Usuarios activos obtenidos con Prisma",
+      message: "Usuarios activos obtenidos",
       total: users.length,
       data: users
     });
@@ -47,8 +48,25 @@ req: Request,
     next(error);
   }
 }
+// Función para obtener todos los usuarios inactivos
+export async function getInactiveUsersController( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const users = await getInactiveUsersService();
 
-// Función para obtener el conteo total de usuarios usando Prisma
+    return res.status(200).json({
+      message: "Usuarios Inactivos obtenidos",
+      total: users.length,
+      data: users
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+// Función para obtener el conteo total de usuarios
 export async function getUsersCountController(
   req: Request,
   res: Response,
@@ -56,69 +74,54 @@ export async function getUsersCountController(
 ) {try {
     const total = await getUsersCountService();
     return res.status(200).json({
-      message: "Conteo de usuarios obtenido con Prisma",
+      message: "Conteo de usuarios",
       total
     });
   } catch (error) {
     next(error);
   }
 }
-// Función para obtener un usuario filtrado por ROl usando prisma
+// Función para obtener un usuario filtrado por ROl 
 export async function getUsersByRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  try {
-    const { role } = req.params;
-
-    // Validación de entrada (responsabilidad del controlador)
-    if (role !== "USER" && role !== "ADMIN") {
-      return res.status(400).json({
-        error: "El rol debe ser 'USER' o 'ADMIN'"
-      });
-    }
-
-    // Llamada a la capa de servicio
-    const users = await getUsersByRoleService(role);
+  try{
+    const role = String(req.params.role);
+    
+    const { usersByRole, cleanRole } = await getUsersByRoleService(role);
 
     return res.status(200).json({
-      message: `Usuarios con rol ${role} obtenidos con Prisma`,
-      total: users.length,
-      data: users
-    });
+      message: `Listado de usuarios con rol '${cleanRole}'`,
+      total: usersByRole.length,
+      data: usersByRole
+    })
+
   } catch (error) {
     next(error);
   }
 }
-// Funcion para buscar un usuario por email usando Prisma
+
+// Funcion para buscar un usuario por email  
 export async function getUserByEmailController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const { email } = req.params;
+    const email = String(req.params.email);
+    const data = await getUserByEmailService(email);
 
-    // Validación de entrada (responsabilidad del controlador)
-    if (!email || typeof email !== "string") {
-      return res.status(400).json({
-        error: "El email es obligatorio y debe ser una cadena de texto"
-      });
-    }
-
-    // Llamada a la capa de servicio
-    const user = await getUserByEmailService(email);
-
-    return res.status(200).json({
-      message: `Usuario con email ${email} obtenido con Prisma`,
-      data: user
+    res.status(200).json({
+      message: "Búsqueda de usuario por email",
+      data: data
     });
   } catch (error) {
     next(error);
   }
 }
-// Función para identificar un usuario por ID usando Prisma
+// Función para identificar un usuario por ID  
 export async function getUserByIdController(
   req: Request,
   res: Response,
@@ -136,7 +139,7 @@ export async function getUserByIdController(
     const user = await getUserByIdService(id);
 
     return res.status(200).json({
-      message: "Usuario encontrado con Prisma",
+      message: "Usuario encontrado",
       data: user
     });
   } catch (error) {
@@ -144,7 +147,7 @@ export async function getUserByIdController(
   }
 }
 
-// Endpoint para crear un usuario de prueba usando Prisma
+// Endpoint para crear un usuario de prueba  
 export async function createDebugUserController(
   req: Request,
   res: Response,
@@ -154,7 +157,7 @@ export async function createDebugUserController(
     const createdUser = await createDebugUserService(req.body);
 
     return res.status(201).json({
-      message: "Usuario creado con Prisma",
+      message: "Usuario creado",
       data: createdUser
     });
   } catch (error) {
