@@ -5,7 +5,7 @@ import {
   getUserByIdController,
   listUsersController,
   updateUserController,
-  reactivateUserController
+  reactivateUserController,
 } from "../controllers/user.controller";
 
 export const userRouter = Router();

@@ -10,42 +10,45 @@
 - He arrancado el servidor en local.
 - He probado la respuesta desde navegador y desde Insomnia.
 
---- 
+---
 
 ## Comando para arrancar el proyecto
 
 ```bash
 npm run dev
 ```
---- 
+
+---
 
 ## URL de prueba
 
 ```text
 http://localhost:3000
 ```
---- 
+
+---
 
 ### Respuesta obtenida
 
 ```json
 {
-     "name": "UserManager API",
-     "version": "1.0.0",
-     "status": "running",
-     "author": "Daniel M.H.",
-    "endpoints de ejemplo": {
-        "GET /users": "Obtiene todos los usuarios",
-        "POST /users": "Crea un nuevo usuario",
-        "GET /users/:id": "Obtiene un usuario por ID",
-        "PUT /users/:id": "Actualiza un usuario por ID",
-        "DELETE /users/:id": "Elimina un usuario por ID",}
+  "name": "UserManager API",
+  "version": "1.0.0",
+  "status": "running",
+  "author": "Daniel M.H.",
+  "endpoints de ejemplo": {
+    "GET /users": "Obtiene todos los usuarios",
+    "POST /users": "Crea un nuevo usuario",
+    "GET /users/:id": "Obtiene un usuario por ID",
+    "PUT /users/:id": "Actualiza un usuario por ID",
+    "DELETE /users/:id": "Elimina un usuario por ID"
+  }
 }
 ```
 
 ![Respuesta en Insomnia](./images/get-basico.png)
 
---- 
+---
 
 ## URL de de segunda ruta
 
@@ -53,21 +56,17 @@ http://localhost:3000
 http://localhost:3000/api/info
 ```
 
-
 ### Respuesta obtenida
 
 ```json
 {
-	"project": "UserManager API",
-	"description": "API REST para gestionar usuarios",
-	"day": 2,
-	"technologies": [
-		"Node.js",
-		"Express",
-		"TypeScript"
-	]
+  "project": "UserManager API",
+  "description": "API REST para gestionar usuarios",
+  "day": 2,
+  "technologies": ["Node.js", "Express", "TypeScript"]
 }
 ```
+
 ![Respuesta en Insomnia api](./images/get-api-info.png)
 
 ---
@@ -75,14 +74,16 @@ http://localhost:3000/api/info
 ## Explicación personal
 
 - ¿Qué hace el archivo src/server.ts?
+
 ```text
 El archivo server.ts nos sirve para manejar el servidor de la aplicación, desde aquí podremos recibir consultas GET,PUT, POST...
 ```
+
 - ¿Qué hace app.listen?
-Nos sirve para escuchar al servidor e indicar el puerto de entrada.
+  Nos sirve para escuchar al servidor e indicar el puerto de entrada.
 
 - ¿Qué hace app.get?
-Nos sirve para obtener información del servidor.
+  Nos sirve para obtener información del servidor.
 
 - ¿Por qué usamos express.json?
 
@@ -91,6 +92,7 @@ Usamos express como framework para simplificar las consultas al servidor, pero e
 ---
 
 ## Investigar un error
+
 - Cambiamos el puerto:
 
 Cuando cambiamos el puerto e intentamos acceder a la ruta nos sale el siguiente error:

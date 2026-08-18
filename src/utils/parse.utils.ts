@@ -6,7 +6,7 @@ export function parseIdParam(value: string) {
 
   if (Number.isNaN(id)) {
     throw new AppError("El ID debe ser un número", 400, {
-      received: value
+      received: value,
     });
   }
 

@@ -11,15 +11,15 @@ import {
   findUserById,
   findUsersByRole,
   usersCount,
-  updateUser
+  updateUser,
 } from "../repositories/user.repository";
 import {
   isNonEmptyString,
   isValidBasicEmail,
-  normalizeEmail
+  normalizeEmail,
 } from "../utils/string.utils";
-
-// Definimos un tipo para la entrada de creación de usuario 
+import { hashPassword } from "../utils/password.utils";
+// Definimos un tipo para la entrada de creación de usuario
 type CreateUserInput = {
   name: unknown;
   email: unknown;
@@ -57,14 +57,13 @@ export async function getUsersByRoleService(role: string) {
   const cleanRole = String(role).trim().toUpperCase();
   // Validación de entrada (responsabilidad del servicio)
   if (cleanRole !== "USER" && cleanRole !== "ADMIN") {
-     throw new AppError("El rol debe ser 'USER' o 'ADMIN'", 400, {
+    throw new AppError("El rol debe ser 'USER' o 'ADMIN'", 400, {
       received: cleanRole,
-    })
+    });
   }
   const usersByRole = await findUsersByRole(cleanRole);
 
-
-  return {usersByRole, cleanRole};
+  return { usersByRole, cleanRole };
 }
 // Obtiene un usuario por su ID de forma segura.
 export async function getUserByIdService(id: number) {
@@ -79,18 +78,17 @@ export async function getUserByIdService(id: number) {
 
 // Buscamos el usuario por email de forma segura.
 export async function getUserByEmailService(email: string) {
-    
-    const cleanEmail = normalizeEmail(email);
+  const cleanEmail = normalizeEmail(email);
 
-    const data = await findUserByEmail(email);
+  const data = await findUserByEmail(email);
 
-    if(!data) {
-        throw new AppError("Usuario no encontrado", 404, {
-            email: cleanEmail
-        })
-    }
+  if (!data) {
+    throw new AppError("Usuario no encontrado", 404, {
+      email: cleanEmail,
+    });
+  }
 
-    return data;
+  return data;
 }
 
 // Crea un usuario con validación y manejo de errores.
@@ -125,14 +123,15 @@ export async function createUserService(input: CreateUserInput) {
 
   if (existingUser) {
     throw new AppError("El email ya está registrado", 409, {
-      email: cleanEmail
+      email: cleanEmail,
     });
   }
+  const passwordHash = await hashPassword(cleanPassword); // Hasheamos la contraseña antes de guardarla en la base de datos
 
   return createUser({
     name: cleanName,
     email: cleanEmail,
-    passwordHash: `hash_temporal_${cleanPassword}`
+    passwordHash, // Guardamos el hash de la contraseña en lugar de la contraseña en texto plano
   });
 }
 
@@ -173,7 +172,7 @@ export async function updateUserService(id: number, input: UpdateUserInput) {
 
     if (existingUser && existingUser.id !== id) {
       throw new AppError("El email ya está registrado", 409, {
-        email: cleanEmail
+        email: cleanEmail,
       });
     }
 
@@ -225,4 +224,4 @@ export async function reactivateUserService(id: number) {
   }
 
   return reactivateUser(id);
-} 
+}

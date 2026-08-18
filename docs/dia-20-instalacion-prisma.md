@@ -65,30 +65,31 @@ Aunque ambos forman parte del ecosistema de Prisma, cumplen funciones completame
 ---
 
 ### 1. `prisma` (Prisma CLI)
-Es la **herramienta de línea de comandos** (*Command Line Interface*) que utilizas desde la terminal de tu sistema.
 
-* **Función:** Administrar la base de datos, gestionar el esquema y ejecutar herramientas del entorno de Prisma.
-* **Uso en terminal:** `npx prisma init`, `npx prisma migrate dev`, `npx prisma studio`, `npx prisma generate`.
-* **Momento de uso:** Exclusivamente cuando tú, como desarrollador, ejecutas comandos en la consola. No interviene cuando la API está encendida respondiendo peticiones.
+Es la **herramienta de línea de comandos** (_Command Line Interface_) que utilizas desde la terminal de tu sistema.
+
+- **Función:** Administrar la base de datos, gestionar el esquema y ejecutar herramientas del entorno de Prisma.
+- **Uso en terminal:** `npx prisma init`, `npx prisma migrate dev`, `npx prisma studio`, `npx prisma generate`.
+- **Momento de uso:** Exclusivamente cuando tú, como desarrollador, ejecutas comandos en la consola. No interviene cuando la API está encendida respondiendo peticiones.
 
 ---
 
 ### 2. `@prisma/client` (Prisma Client)
+
 Es la **librería de código** que importas e instancias directamente en tus archivos de TypeScript/JavaScript.
 
-* **Función:** Consultar y manipular la base de datos directamente desde el código backend de tu servidor Express.
-* **Uso en código:** `const users = await prisma.user.findMany();`
-* **Momento de uso:** En tiempo de ejecución (*runtime*), cada vez que tu API recibe una petición HTTP y necesita leer o escribir datos en PostgreSQL.
+- **Función:** Consultar y manipular la base de datos directamente desde el código backend de tu servidor Express.
+- **Uso en código:** `const users = await prisma.user.findMany();`
+- **Momento de uso:** En tiempo de ejecución (_runtime_), cada vez que tu API recibe una petición HTTP y necesita leer o escribir datos en PostgreSQL.
 
 ---
 
 ### Resumen de diferencias
 
-| Concepto | ¿Qué es? | ¿Dónde se usa? | Ejemplo |
-| --- | --- | --- | --- |
-| **`prisma`** | Herramienta de comandos (CLI) | En la **terminal** | `npx prisma studio` |
-| **`@prisma/client`** | Librería / Conector ORM | En el **código TypeScript** | `prisma.user.create(...)` |
-
+| Concepto             | ¿Qué es?                      | ¿Dónde se usa?              | Ejemplo                   |
+| -------------------- | ----------------------------- | --------------------------- | ------------------------- |
+| **`prisma`**         | Herramienta de comandos (CLI) | En la **terminal**          | `npx prisma studio`       |
+| **`@prisma/client`** | Librería / Conector ORM       | En el **código TypeScript** | `prisma.user.create(...)` |
 
 ## Partes de schema.prisma
 
@@ -97,22 +98,30 @@ El archivo `prisma/schema.prisma` es el corazón de la configuración de Prisma.
 ---
 
 ### 1. `generator client`
-Bloque que indica a Prisma **qué código o cliente debe autogenerar** cuando ejecutamos `npx prisma generate`. 
-* Por defecto utiliza el motor `prisma-client-js`, el cual construye la librería `@prisma/client` personalizada con todos los métodos e interfaces de TypeScript adaptados a nuestras tablas.
+
+Bloque que indica a Prisma **qué código o cliente debe autogenerar** cuando ejecutamos `npx prisma generate`.
+
+- Por defecto utiliza el motor `prisma-client-js`, el cual construye la librería `@prisma/client` personalizada con todos los métodos e interfaces de TypeScript adaptados a nuestras tablas.
 
 ### 2. `datasource db`
-Bloque de configuración de la **fuente de datos** (*Database Connection*). Define los parámetros principales para que Prisma sepa a qué base de datos física debe conectarse y qué tipo de servidor relacional es.
+
+Bloque de configuración de la **fuente de datos** (_Database Connection_). Define los parámetros principales para que Prisma sepa a qué base de datos física debe conectarse y qué tipo de servidor relacional es.
 
 ### 3. `provider`
+
 Propiedad clave que especifica el **motor o tipo de base de datos** que estamos utilizando.
-* *Ejemplos:* `"postgresql"`, `"mysql"`, `"sqlite"`, `"sqlserver"`. En nuestro proyecto utilizamos `"postgresql"`.
+
+- _Ejemplos:_ `"postgresql"`, `"mysql"`, `"sqlite"`, `"sqlserver"`. En nuestro proyecto utilizamos `"postgresql"`.
 
 ### 4. `url`
-Propiedad que define la **cadena de conexión** (*Connection String*) a la base de datos. Contiene los datos necesarios para autenticarse: usuario, contraseña, host, puerto y nombre de la base de datos.
+
+Propiedad que define la **cadena de conexión** (_Connection String_) a la base de datos. Contiene los datos necesarios para autenticarse: usuario, contraseña, host, puerto y nombre de la base de datos.
 
 ### 5. `env("DATABASE_URL")`
+
 Es una función auxiliar de Prisma que **lee el valor de una variable de entorno** del archivo `.env` en lugar de escribir la ruta de conexión directamente en el código.
-* **¿Por qué se usa?** Por seguridad y buenas prácticas. Evita exponer credenciales sensibles (como usuarios y contraseñas) dentro del repositorio Git y permite cambiar de base de datos fácilmente en diferentes entornos (desarrollo, pruebas, producción).
+
+- **¿Por qué se usa?** Por seguridad y buenas prácticas. Evita exponer credenciales sensibles (como usuarios y contraseñas) dentro del repositorio Git y permite cambiar de base de datos fácilmente en diferentes entornos (desarrollo, pruebas, producción).
 
 ---
 
@@ -129,16 +138,19 @@ datasource db {
   provider = "postgresql"             // Motor utilizado
   url      = env("DATABASE_URL")     // Lectura segura desde el .env
 }
-````
+```
+
 ---
+
 ## Relacionar `.env` con Docker Compose
-| Parte | Valor en Docker Compose | Valor en DATABASE_URL |
-| --- | --- | --- |
-| **Usuario** | `POSTGRES_USER` | El primer parámetro tras el protocolo (`postgresql://usermanager:...`) |
-| **Contraseña** | `POSTGRES_PASSWORD` | El valor que va tras los dos puntos del usuario (`...:cusermanager_password@...`) |
-| **Base de datos** | `POSTGRES_DB` | El nombre que se pone al final de la ruta (`...:5432/usermanager_db`) |
-| **Puerto** | `5432:5432` | El número de puerto que va tras el host (`...:5432/...`) |
-| **Host** | ejecución local | Se indica como `localhost` o `127.0.0.1` (`...@localhost:5432/...`) |
+
+| Parte             | Valor en Docker Compose | Valor en DATABASE_URL                                                             |
+| ----------------- | ----------------------- | --------------------------------------------------------------------------------- |
+| **Usuario**       | `POSTGRES_USER`         | El primer parámetro tras el protocolo (`postgresql://usermanager:...`)            |
+| **Contraseña**    | `POSTGRES_PASSWORD`     | El valor que va tras los dos puntos del usuario (`...:cusermanager_password@...`) |
+| **Base de datos** | `POSTGRES_DB`           | El nombre que se pone al final de la ruta (`...:5432/usermanager_db`)             |
+| **Puerto**        | `5432:5432`             | El número de puerto que va tras el host (`...:5432/...`)                          |
+| **Host**          | ejecución local         | Se indica como `localhost` o `127.0.0.1` (`...@localhost:5432/...`)               |
 
 ---
 
@@ -161,17 +173,17 @@ Este diagrama representa cómo se transforma la definición de los datos en la c
 
 Antes de escribir el código final en `schema.prisma`, definimos la estructura detallada del modelo `User`. Esta tabla especifica los atributos, tipos de datos y restricciones de cada campo para garantizar la integridad de los datos en PostgreSQL:
 
-| Campo | Tipo conceptual | Obligatorio | Único | Valor por defecto | Se devuelve al cliente |
-|---|---|---|---|---|---|
-| `id` | número | sí | sí | automático | sí |
-| `name` | texto | sí | no | no | sí |
-| `email` | texto | sí | sí | no | sí |
-| `passwordHash` | texto | sí | no | no | no |
-| `role` | `USER` / `ADMIN` | sí | no | `USER` | sí |
-| `isActive` | booleano | sí | no | `true` | sí |
-| `createdAt` | fecha | sí | no | automático | sí |
-| `updatedAt` | fecha | sí | no | automático | sí |
-| `lastLoginAt` | fecha| no | no| null | sí |
-| `avatarUrl` | texto | no | no | null | sí |
-| `phone` | texto | no | si| no | sí |
-| `bio` | texto | no | no | no | sí |
+| Campo          | Tipo conceptual  | Obligatorio | Único | Valor por defecto | Se devuelve al cliente |
+| -------------- | ---------------- | ----------- | ----- | ----------------- | ---------------------- |
+| `id`           | número           | sí          | sí    | automático        | sí                     |
+| `name`         | texto            | sí          | no    | no                | sí                     |
+| `email`        | texto            | sí          | sí    | no                | sí                     |
+| `passwordHash` | texto            | sí          | no    | no                | no                     |
+| `role`         | `USER` / `ADMIN` | sí          | no    | `USER`            | sí                     |
+| `isActive`     | booleano         | sí          | no    | `true`            | sí                     |
+| `createdAt`    | fecha            | sí          | no    | automático        | sí                     |
+| `updatedAt`    | fecha            | sí          | no    | automático        | sí                     |
+| `lastLoginAt`  | fecha            | no          | no    | null              | sí                     |
+| `avatarUrl`    | texto            | no          | no    | null              | sí                     |
+| `phone`        | texto            | no          | si    | no                | sí                     |
+| `bio`          | texto            | no          | no    | no                | sí                     |

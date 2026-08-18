@@ -9,7 +9,7 @@ if (!connectionString) {
 }
 
 const adapter = new PrismaPg({
-  connectionString
+  connectionString,
 });
 
 export const prisma = new PrismaClient({ adapter });

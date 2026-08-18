@@ -333,13 +333,13 @@ Posibles errores:
 
 La API utiliza códigos HTTP para indicar el resultado de cada petición.
 
-| Código | Significado | Uso en el proyecto |
-| ---: | --- | --- |
-| 200 | OK | Consulta, actualización o desactivación correcta |
-| 201 | Created | Usuario creado correctamente |
-| 400 | Bad Request | Datos incorrectos o incompletos |
-| 404 | Not Found | Usuario no encontrado |
-| 409 | Conflict | Email duplicado |
+| Código | Significado | Uso en el proyecto                               |
+| -----: | ----------- | ------------------------------------------------ |
+|    200 | OK          | Consulta, actualización o desactivación correcta |
+|    201 | Created     | Usuario creado correctamente                     |
+|    400 | Bad Request | Datos incorrectos o incompletos                  |
+|    404 | Not Found   | Usuario no encontrado                            |
+|    409 | Conflict    | Email duplicado                                  |
 
 Ejemplo de error 404:
 
@@ -357,6 +357,7 @@ Ejemplo de error 409:
   "error": "El email ya está registrado"
 }
 ```
+
 ## Gestión centralizada de errores
 
 La API utiliza un middleware global para devolver errores con un formato común.
@@ -416,6 +417,7 @@ is_active
 created_at
 updated_at
 ```
+
 ## Base de datos con Docker Compose
 
 El proyecto utiliza Docker Compose para levantar PostgreSQL y Adminer.
@@ -481,6 +483,7 @@ role por defecto USER
 isActive por defecto true
 createdAt y updatedAt automáticos
 ```
+
 Este diseño se convertirá más adelante en un modelo Prisma.
 
 ## ORM y acceso a datos
@@ -641,7 +644,6 @@ Detectar errores de persistencia.
 
 Prisma Studio es una herramienta de desarrollo. La gestión real de usuarios se hará desde la API.
 
-
 ## Seed de datos iniciales
 
 El proyecto incluye un seed para crear usuarios iniciales.
@@ -666,11 +668,11 @@ npm run prisma:seed
 
 Usuarios iniciales:
 
-| Email | Role | Estado |
-| --- | --- | --- |
-| `admin@email.com` | `ADMIN` | activo |
-| `user@email.com` | `USER` | activo |
-| `inactive@email.com` | `USER` | inactivo |
+| Email                | Role    | Estado   |
+| -------------------- | ------- | -------- |
+| `admin@email.com`    | `ADMIN` | activo   |
+| `user@email.com`     | `USER`  | activo   |
+| `inactive@email.com` | `USER`  | inactivo |
 
 Nota:
 
@@ -697,12 +699,12 @@ import { PrismaClient } from "./generated/prisma/client";
 
 Rutas temporales de prueba:
 
-| Método | Ruta | Acción |
-| --- | --- |---|
-| GET | `/api/debug/prisma/users` | Listar usuarios |
-| GET | `/api/debug/prisma/users-active` | Listar usuarios activos |
-| GET | `/api/debug/prisma/users/:id` | Buscar usuario por ID |
-| POST | `/api/debug/prisma/users` | Crear usuario |
+| Método | Ruta                             | Acción                  |
+| ------ | -------------------------------- | ----------------------- |
+| GET    | `/api/debug/prisma/users`        | Listar usuarios         |
+| GET    | `/api/debug/prisma/users-active` | Listar usuarios activos |
+| GET    | `/api/debug/prisma/users/:id`    | Buscar usuario por ID   |
+| POST   | `/api/debug/prisma/users`        | Crear usuario           |
 
 Regla:
 
@@ -735,6 +737,7 @@ app.use("/api/debug/prisma", debugPrismaRouter);
 ```
 
 Esta separación permite que server.ts quede más limpio y que el proyecto pueda crecer hacia una arquitectura con controladores, servicios y repositorios.
+
 ## Controladores
 
 El proyecto empieza a separar la lógica HTTP en controladores.
@@ -795,9 +798,9 @@ Los servicios contienen lógica de negocio como:
 El controlador queda más limpio y llama a funciones como:
 
 ```ts
-getUsersService()
-getUserByIdService(id)
-createDebugUserService(req.body)
+getUsersService();
+getUserByIdService(id);
+createDebugUserService(req.body);
 ```
 
 En este punto, el servicio todavía usa Prisma directamente. En el siguiente paso se añadirá una capa de repositorios.
@@ -836,12 +839,12 @@ La API ya tiene rutas reales para gestionar usuarios con PostgreSQL y Prisma.
 
 Rutas principales:
 
-| Método | Ruta | Acción |
-| --- | --- |---|
-| GET | `/api/users` | Listar usuarios |
-| GET | `/api/users/:id` | Consultar usuario |
-| POST | `/api/users` | Crear usuario |
-| PATCH | `/api/users/:id` | Actualizar usuario |
+| Método | Ruta             | Acción             |
+| ------ | ---------------- | ------------------ |
+| GET    | `/api/users`     | Listar usuarios    |
+| GET    | `/api/users/:id` | Consultar usuario  |
+| POST   | `/api/users`     | Crear usuario      |
+| PATCH  | `/api/users/:id` | Actualizar usuario |
 | DELETE | `/api/users/:id` | Desactivar usuario |
 
 Flujo interno:
@@ -891,16 +894,48 @@ src/
 
 Rutas principales:
 
-| Método | Ruta | Acción |
-| --- | --- |---|
-| GET | `/api/health` | Comprobar estado de la API |
-| GET | `/api/users` | Listar usuarios |
-| GET | `/api/users/:id` | Consultar usuario |
-| POST | `/api/users` | Crear usuario |
-| PATCH | `/api/users/:id` | Actualizar usuario |
-| DELETE | `/api/users/:id` | Desactivar usuario |
+| Método | Ruta             | Acción                     |
+| ------ | ---------------- | -------------------------- |
+| GET    | `/api/health`    | Comprobar estado de la API |
+| GET    | `/api/users`     | Listar usuarios            |
+| GET    | `/api/users/:id` | Consultar usuario          |
+| POST   | `/api/users`     | Crear usuario              |
+| PATCH  | `/api/users/:id` | Actualizar usuario         |
+| DELETE | `/api/users/:id` | Desactivar usuario         |
+
+## Seguridad de contraseñas
+
+El proyecto usa `bcrypt` para hashear contraseñas antes de guardarlas en la base de datos.
+
+Instalación:
+
+```bash
+npm install bcrypt
+npm install -D @types/bcrypt
+```
+
+Utilidades principales:
+
+```text
+src/utils/password.utils.ts
+```
+
+Funciones:
+
+```ts
+hashPassword(password);
+comparePassword(password, passwordHash);
+```
+
+Reglas:
+
+- La API recibe `password`.
+- La base de datos guarda `passwordHash`.
+- La contraseña en texto plano nunca se guarda.
+- `passwordHash` nunca se devuelve al cliente.
 
 ## Documentación del reto
+
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
 - [Día 2 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)
 - [Día 3 - Primer Endpoint](docs/dia-03-primer-endpoint.md)
@@ -932,5 +967,4 @@ Rutas principales:
 - [Día 29 - Repositorio con Prisma](docs/dia-29-repositorio-prisma.md)
 - [Día 30 - CRUD persistente ordenado](docs/dia-30-crud-persistente-ordenado.md)
 - [Día 31 - Limpieza y refactor](docs/dia-31-limpieza-refactor.md)
-
-
+- [Día 32 - Contraseñas seguras con bcrypt](docs/dia-32-bcrypt-passwords.md)

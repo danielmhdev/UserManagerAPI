@@ -32,12 +32,12 @@ src/
 
 ## Rutas montadas
 
-| Router | Prefijo en server.ts | Ruta interna | Ruta final |
-|---|---|---|---|
-| healthRouter | `/api/health` | `/` | `/api/health` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users` | `/api/debug/prisma/users` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users/:id` | `/api/debug/prisma/users/:id` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users-active` | `/api/debug/prisma/users-active` |
+| Router            | Prefijo en server.ts | Ruta interna    | Ruta final                       |
+| ----------------- | -------------------- | --------------- | -------------------------------- |
+| healthRouter      | `/api/health`        | `/`             | `/api/health`                    |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users`        | `/api/debug/prisma/users`        |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users/:id`    | `/api/debug/prisma/users/:id`    |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users-active` | `/api/debug/prisma/users-active` |
 
 ## Explicación personal
 
@@ -59,16 +59,16 @@ server.ts ya no define todas las rutas directamente. Ahora monta routers separad
 
 ## Mapa de rutas
 
-| Router | Prefijo en server.ts | Ruta interna | Método | Ruta final |
-|---|---|---|---|---|
-| healthRouter | `/api/health` | `/` | `GET` | `/api/health` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users` | `GET` | `/api/debug/prisma/users` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users-active` | `GET` | `/api/debug/prisma/users-active` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users-count` | `GET` | `/api/debug/prisma/users-count` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users-role/:role` | `GET` | `/api/debug/prisma/users-role/:role` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users/:id` | `GET` | `/api/debug/prisma/users/:id` |
-| debugPrismaRouter | `/api/debug/prisma` | `/users` | `POST` | `/api/debug/prisma/users` |
-| authRouter | `/api/auth` | `/debug` | `GET` | `/api/auth/debug` |
+| Router            | Prefijo en server.ts | Ruta interna        | Método | Ruta final                           |
+| ----------------- | -------------------- | ------------------- | ------ | ------------------------------------ |
+| healthRouter      | `/api/health`        | `/`                 | `GET`  | `/api/health`                        |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users`            | `GET`  | `/api/debug/prisma/users`            |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users-active`     | `GET`  | `/api/debug/prisma/users-active`     |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users-count`      | `GET`  | `/api/debug/prisma/users-count`      |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users-role/:role` | `GET`  | `/api/debug/prisma/users-role/:role` |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users/:id`        | `GET`  | `/api/debug/prisma/users/:id`        |
+| debugPrismaRouter | `/api/debug/prisma`  | `/users`            | `POST` | `/api/debug/prisma/users`            |
+| authRouter        | `/api/auth`          | `/debug`            | `GET`  | `/api/auth/debug`                    |
 
 ## Qué hace `app.use`
 
@@ -79,9 +79,10 @@ La dirección final que escucha el servidor es la combinación de ambos:
 > **Prefijo en server.ts** + **Ruta interna en el router** = **Ruta final**
 
 ### Ventajas principales:
-* **Evita repeticiones:** No es necesario reescribir la base de la URL (ej. `/api/debug/prisma`) en cada endpoint.
-* **Modularidad:** Permite aislar cada recurso en su propio archivo dentro de `src/routes/`.
-* **Middlewares compartidos:** Facilita aplicar seguridad, validaciones o autenticación a todo un bloque de rutas en una sola línea.
+
+- **Evita repeticiones:** No es necesario reescribir la base de la URL (ej. `/api/debug/prisma`) en cada endpoint.
+- **Modularidad:** Permite aislar cada recurso en su propio archivo dentro de `src/routes/`.
+- **Middlewares compartidos:** Facilita aplicar seguridad, validaciones o autenticación a todo un bloque de rutas en una sola línea.
 
 ## Comparar antes y después
 
@@ -99,10 +100,10 @@ Actualmente, aunque hemos modularizado algunas rutas, `server.ts` sigue contenie
 
 ### 1. ¿Qué lógica sigue mezclada dentro de las rutas?
 
-* **Extracción y parseo de datos:** Conversión de tipos manual (`Number(req.params.id)`), lectura de `req.body`, `req.query` y `req.headers`.
-* **Validación de reglas de negocio:** Comprobaciones de formatos de email, longitud de contraseñas (`isValidPassword`), strings vacíos y normalizaciones.
-* **Manipulación y acceso a datos:** Búsquedas (`find`, `findIndex`), cálculos de IDs (`Math.max`), mutaciones de arrays (`push`, reasignaciones) y llamadas directas al modelo de datos.
-* **Construcción de respuestas HTTP:** Definición manual de códigos de estado (`200`, `201`, `400`, `404`, `409`) y formateo de los payloads JSON de respuesta.
+- **Extracción y parseo de datos:** Conversión de tipos manual (`Number(req.params.id)`), lectura de `req.body`, `req.query` y `req.headers`.
+- **Validación de reglas de negocio:** Comprobaciones de formatos de email, longitud de contraseñas (`isValidPassword`), strings vacíos y normalizaciones.
+- **Manipulación y acceso a datos:** Búsquedas (`find`, `findIndex`), cálculos de IDs (`Math.max`), mutaciones de arrays (`push`, reasignaciones) y llamadas directas al modelo de datos.
+- **Construcción de respuestas HTTP:** Definición manual de códigos de estado (`200`, `201`, `400`, `404`, `409`) y formateo de los payloads JSON de respuesta.
 
 ---
 
@@ -110,12 +111,13 @@ Actualmente, aunque hemos modularizado algunas rutas, `server.ts` sigue contenie
 
 Todas las funciones callback `(req, res, next) => { ... }` asociadas a cada endpoint deben extraerse a un archivo de controladores :
 
-* `getUsers` / `getUserById` / `getUserProfile`
-* `createUser`
-* `updateUser` / `updateUserStatus` / `updateUserRole`
-* `deleteUser` / `reactivateUser`
+- `getUsers` / `getUserById` / `getUserProfile`
+- `createUser`
+- `updateUser` / `updateUserStatus` / `updateUserRole`
+- `deleteUser` / `reactivateUser`
 
 De este modo, el archivo de rutas solo se encarga de asociar el método HTTP y el path con su controlador correspondiente:
+
 ```typescript
 // users.routes.ts queda limpio y declarativo:
 router.get("/", getUsers);
@@ -124,6 +126,7 @@ router.post("/", createUser);
 ```
 
 ### 3. ¿Qué debería hacer un controlador?
+
 El controlador actúa como puente entre el protocolo HTTP (Express) y la lógica de negocio de la aplicación. Su responsabilidad se limita a:
 
 - Recibir la petición: Extraer y sanitizar los parámetros de entrada (req.params, req.query, req.body).

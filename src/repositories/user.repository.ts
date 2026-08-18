@@ -9,7 +9,7 @@ const userSafeSelect = {
   role: true,
   isActive: true,
   createdAt: true,
-  updatedAt: true
+  updatedAt: true,
 } as const;
 // Datos que el repo necesita para crear el usuario.
 type CreateUserData = {
@@ -32,49 +32,49 @@ export function findAllUsers() {
   return prisma.user.findMany({
     select: userSafeSelect,
     orderBy: {
-      id: "asc"
-    }
+      id: "asc",
+    },
   });
 }
 // Devuelve todos los usuarios activos de la base de datos
 export function findActiveUsers() {
   return prisma.user.findMany({
     where: {
-      isActive: true
+      isActive: true,
     },
     select: userSafeSelect,
     orderBy: {
-      id: "asc"
-    }
+      id: "asc",
+    },
   });
 }
 // Devuelve todos los usuarios inactivos de la base de datos
 export function findInactiveUsers() {
   return prisma.user.findMany({
     where: {
-      isActive: false
+      isActive: false,
     },
     select: userSafeSelect,
     orderBy: {
-      id: "asc"
-    }
+      id: "asc",
+    },
   });
 }
 // Devuelve el conteo total de usuarios
-export function usersCount(){
-    return prisma.user.count();
+export function usersCount() {
+  return prisma.user.count();
 }
 
 // Devuelve usuarios filtrados por rol de la base de datos
 export function findUsersByRole(role: Role) {
   return prisma.user.findMany({
     where: {
-      role
+      role,
     },
     select: userSafeSelect,
     orderBy: {
-      id: "asc"
-    }
+      id: "asc",
+    },
   });
 }
 
@@ -82,35 +82,35 @@ export function findUsersByRole(role: Role) {
 export function findUserById(id: number) {
   return prisma.user.findUnique({
     where: {
-      id
+      id,
     },
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }
 // Devuelve usuarios por email
 export function findUserByEmail(email: string) {
   return prisma.user.findUnique({
     where: {
-      email
+      email,
     },
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }
 // Crearemos usuarios
 export function createUser(data: CreateUserData) {
   return prisma.user.create({
     data,
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }
 // Actualizamos usuarios
 export function updateUser(id: number, data: UpdateUserData) {
   return prisma.user.update({
     where: {
-      id
+      id,
     },
     data,
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }
 
@@ -118,12 +118,12 @@ export function updateUser(id: number, data: UpdateUserData) {
 export function deactivateUser(id: number) {
   return prisma.user.update({
     where: {
-      id
+      id,
     },
     data: {
-      isActive: false
+      isActive: false,
     },
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }
 
@@ -131,11 +131,11 @@ export function deactivateUser(id: number) {
 export function reactivateUser(id: number) {
   return prisma.user.update({
     where: {
-      id
+      id,
     },
     data: {
-      isActive: true
+      isActive: true,
     },
-    select: userSafeSelect
+    select: userSafeSelect,
   });
 }

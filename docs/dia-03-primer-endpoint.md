@@ -43,27 +43,29 @@ El endpoint `/api/ping`sirve para comprobar que el servidor responde corretament
 
 ## Tablas comparando las 3 rutas /, /api/health y /api/ping
 
-| Ruta | Método | Para qué sirve |
-| --- | --- | --- |
-| `/` | `GET` | Mensaje inicial de la API |
-| `/api/health` | `GET` | Comprobar el estado de la API |
-| `/api/ping` | `GET` | Comprobar respuesta rápida del servidor |
+| Ruta          | Método | Para qué sirve                          |
+| ------------- | ------ | --------------------------------------- |
+| `/`           | `GET`  | Mensaje inicial de la API               |
+| `/api/health` | `GET`  | Comprobar el estado de la API           |
+| `/api/ping`   | `GET`  | Comprobar respuesta rápida del servidor |
 
 ## Pruebas realizadas
+
 ```text
 GET http://localhost:3000/
 GET http://localhost:3000/api/health
 GET http://localhost:3000/api/ping
-````
-| Petición | Código | Resultado obtenido |
-| :--- | :---: | :--- |
-| `GET /` | 200 | `{"name": "UserManager API", "version": "1.0.0", "status": "running", "author": "Daniel M.H."}` |
-| `GET /api/health` | 200 | `{"status": "200 OK", "message": "UserManager API funcionando correctamente", "timestamp": "..."}` |
-| `GET /api/ping` | 200 | `{"message": "pong", "timestamp": "..."}` |
+```
+
+| Petición          | Código | Resultado obtenido                                                                                 |
+| :---------------- | :----: | :------------------------------------------------------------------------------------------------- |
+| `GET /`           |  200   | `{"name": "UserManager API", "version": "1.0.0", "status": "running", "author": "Daniel M.H."}`    |
+| `GET /api/health` |  200   | `{"status": "200 OK", "message": "UserManager API funcionando correctamente", "timestamp": "..."}` |
+| `GET /api/ping`   |  200   | `{"message": "pong", "timestamp": "..."}`                                                          |
 
 - `GET /`
-![Get básico](./images/get-basico.png)
+  ![Get básico](./images/get-basico.png)
 - `GET /api/health`
-![Get health](./images/get-health.png)
+  ![Get health](./images/get-health.png)
 - `GET /api/ping`
-![Get Ping](./images/get-ping.png)
+  ![Get Ping](./images/get-ping.png)

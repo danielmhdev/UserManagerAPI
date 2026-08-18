@@ -19,38 +19,37 @@ en una base de datos persistente.
 
 ## Diseño de la tabla users
 
-| Campo TypeScript | Campo en base de datos | Tipo conceptual | Descripción |
-| --- | --- | --- | --- |
-| `id` | `id` | número | Identificador único |
-| `name` | `name` | texto | Nombre del usuario |
-| `email` | `email` | texto | Email único |
-| `passwordHash` | `password_hash` | texto | Contraseña hasheada |
-| `role` | `role` | texto | USER o ADMIN |
-| `isActive` | `is_active` | booleano | Estado del usuario |
-| `createdAt` | `created_at` | Timestamp / DateTime | Fecha de creación |
-| `updatedAt` | `updated_at` | Timestamp / DateTime | Fecha de úlitma actualización |
-| `lastLoginAt` | `last_login_at` | Timestamp / DateTime | Fecha de último login |
-| `avatarUrl` | `avatar_url` | texto | Urlr de la imagen de perfil |
-| `phone` | `phone` | texto | Teléfono movil |
-| `bio` | `bio` | texto | Descrición del usuario |
-
+| Campo TypeScript | Campo en base de datos | Tipo conceptual      | Descripción                   |
+| ---------------- | ---------------------- | -------------------- | ----------------------------- |
+| `id`             | `id`                   | número               | Identificador único           |
+| `name`           | `name`                 | texto                | Nombre del usuario            |
+| `email`          | `email`                | texto                | Email único                   |
+| `passwordHash`   | `password_hash`        | texto                | Contraseña hasheada           |
+| `role`           | `role`                 | texto                | USER o ADMIN                  |
+| `isActive`       | `is_active`            | booleano             | Estado del usuario            |
+| `createdAt`      | `created_at`           | Timestamp / DateTime | Fecha de creación             |
+| `updatedAt`      | `updated_at`           | Timestamp / DateTime | Fecha de úlitma actualización |
+| `lastLoginAt`    | `last_login_at`        | Timestamp / DateTime | Fecha de último login         |
+| `avatarUrl`      | `avatar_url`           | texto                | Urlr de la imagen de perfil   |
+| `phone`          | `phone`                | texto                | Teléfono movil                |
+| `bio`            | `bio`                  | texto                | Descrición del usuario        |
 
 ## Defino restricciones
 
-| Campo | Restricción | Motivo |
-| --- | --- | --- |
-| `id` | PRIMARY KEY | Identifica cada usuario |
-| `name` | NOT NULL | Todo usuario debe tener nombre |
-| `email` | NOT NULL, UNIQUE | Todo usuario debe tener email y no se puede repetir |
-| `password_hash` | NOT NULL | Todo usuario necesita credenciales |
-| `role` | NOT NULL | Todo usuario debe tener un rol |
-| `is_active` | NOT NULL, DEFAULT true | Todo usuario debe tener estado |
-| `created_at` | NOT NULL | Debe registrarse cuándo se creó |
-| `last_login_at` | NOT NULL | Debe registrarse cuándo último login |
-| `updated_at` | NOT NULL | Debe registrarse cuándo se actualizó |
-| `avatar_url` | NULL | Puedes elegir o no ponerte perfil |
-| `phone` | NULL, UNIQUE | Puede elegir telefono o no, pero si elige debe ser único|
-| `bio` | NULL | Puede elegir si bio o no |
+| Campo           | Restricción            | Motivo                                                   |
+| --------------- | ---------------------- | -------------------------------------------------------- |
+| `id`            | PRIMARY KEY            | Identifica cada usuario                                  |
+| `name`          | NOT NULL               | Todo usuario debe tener nombre                           |
+| `email`         | NOT NULL, UNIQUE       | Todo usuario debe tener email y no se puede repetir      |
+| `password_hash` | NOT NULL               | Todo usuario necesita credenciales                       |
+| `role`          | NOT NULL               | Todo usuario debe tener un rol                           |
+| `is_active`     | NOT NULL, DEFAULT true | Todo usuario debe tener estado                           |
+| `created_at`    | NOT NULL               | Debe registrarse cuándo se creó                          |
+| `last_login_at` | NOT NULL               | Debe registrarse cuándo último login                     |
+| `updated_at`    | NOT NULL               | Debe registrarse cuándo se actualizó                     |
+| `avatar_url`    | NULL                   | Puedes elegir o no ponerte perfil                        |
+| `phone`         | NULL, UNIQUE           | Puede elegir telefono o no, pero si elige debe ser único |
+| `bio`           | NULL                   | Puede elegir si bio o no                                 |
 
 ## Propuesta SQL conceptual
 
@@ -66,6 +65,7 @@ CREATE TABLE users (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
+
 ## Cambio de arquitectura
 
 ```mermaid
@@ -93,8 +93,8 @@ En desarrollo de software, la **persistencia de datos** es la capacidad de conse
 
 Para entender la importancia de la persistencia, es útil contrastar dónde guardamos la información:
 
-* **Sin persistencia (Memoria RAM / Volátil):** Es lo que ocurre cuando guardamos datos en variables o arrays directamente en el código (como `const users = []`). La memoria RAM es rápida, pero temporal. En el momento en que detienes el proceso con `Ctrl + C` o reinicias el servidor (`npm run dev`), la memoria se vacía por completo y **todos los usuarios creados desaparecen**.
-* **Con persistencia (Disco / No volátil):** Consiste en escribir la información en un soporte físico o servicio externo (como un archivo `.json` en disco o una base de datos). Al reiniciar la aplicación, el servidor lee de nuevo ese soporte y recupera el estado exacto en el que estaban los datos.
+- **Sin persistencia (Memoria RAM / Volátil):** Es lo que ocurre cuando guardamos datos en variables o arrays directamente en el código (como `const users = []`). La memoria RAM es rápida, pero temporal. En el momento en que detienes el proceso con `Ctrl + C` o reinicias el servidor (`npm run dev`), la memoria se vacía por completo y **todos los usuarios creados desaparecen**.
+- **Con persistencia (Disco / No volátil):** Consiste en escribir la información en un soporte físico o servicio externo (como un archivo `.json` en disco o una base de datos). Al reiniciar la aplicación, el servidor lee de nuevo ese soporte y recupera el estado exacto en el que estaban los datos.
 
 ---
 
@@ -108,16 +108,15 @@ En el desarrollo backend, existen diferentes niveles para conseguir que los dato
 
 Sin persistencia, sería imposible construir aplicaciones reales, ya que los usuarios perderían su cuenta, sus carritos de compra o sus publicaciones cada vez que el servidor se actualizara o reiniciara.
 
-
 ## Tabla comparativa: Memoria y Base de datos
 
-| Aspecto | Memoria (RAM / Arrays) | Base de datos |
-| --- | --- | --- |
-| **¿Los datos se conservan al reiniciar?** | **No** (se borran al apagar o reiniciar el servidor) | **Sí** (se guardan de forma permanente en disco) |
-| **¿Sirve para pruebas iniciales?** | **Sí** (ideal para prototipos rápidos y aprender) | **Sí** (imprescindible para pruebas de integración reales) |
-| **¿Sirve para una aplicación real?** | **No** (se perdería la información de los usuarios) | **Sí** (es el estándar de la industria) |
-| **¿Permite trabajar con muchos datos?** | **No** (limitado por la memoria RAM del servidor) | **Sí** (optimizado para millones de registros con índices) |
-| **¿Permite restricciones como UNIQUE?** | **No nativo** (hay que programar las validaciones a mano) | **Sí** (el propio motor de BD las valida automáticamente) |
+| Aspecto                                   | Memoria (RAM / Arrays)                                    | Base de datos                                              |
+| ----------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------- |
+| **¿Los datos se conservan al reiniciar?** | **No** (se borran al apagar o reiniciar el servidor)      | **Sí** (se guardan de forma permanente en disco)           |
+| **¿Sirve para pruebas iniciales?**        | **Sí** (ideal para prototipos rápidos y aprender)         | **Sí** (imprescindible para pruebas de integración reales) |
+| **¿Sirve para una aplicación real?**      | **No** (se perdería la información de los usuarios)       | **Sí** (es el estándar de la industria)                    |
+| **¿Permite trabajar con muchos datos?**   | **No** (limitado por la memoria RAM del servidor)         | **Sí** (optimizado para millones de registros con índices) |
+| **¿Permite restricciones como UNIQUE?**   | **No nativo** (hay que programar las validaciones a mano) | **Sí** (el propio motor de BD las valida automáticamente)  |
 
 ## Independencia entre API y base de datos
 
@@ -125,13 +124,13 @@ Una de las principales ventajas de la arquitectura REST es el **desacoplamiento*
 
 ---
 
-### El contrato de la API (*API Contract*)
+### El contrato de la API (_API Contract_)
 
 El cliente (ya sea un frontend en React, una aplicación móvil o una herramienta como Postman) nunca interactúa directamente con la base de datos. En su lugar, la comunicación se rige por un **contrato de interfaz** basado en:
 
-* **Endpoints y métodos HTTP:** Rutas fijas como `GET /api/users` o `POST /api/users`.
-* **Estructura de intercambio:** Peticiones y respuestas en formato **JSON**.
-* **Códigos de estado HTTP:** Respuestas estandarizadas (`200 OK`, `400 Bad Request`, `404 Not Found`, etc.).
+- **Endpoints y métodos HTTP:** Rutas fijas como `GET /api/users` o `POST /api/users`.
+- **Estructura de intercambio:** Peticiones y respuestas en formato **JSON**.
+- **Códigos de estado HTTP:** Respuestas estandarizadas (`200 OK`, `400 Bad Request`, `404 Not Found`, etc.).
 
 ---
 

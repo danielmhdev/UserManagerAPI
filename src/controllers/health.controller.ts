@@ -4,6 +4,6 @@ export function getHealthController(req: Request, res: Response) {
   return res.status(200).json({
     status: "ok",
     message: "UserManager API funcionando",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }

@@ -36,16 +36,16 @@ model User {
 
 ## Explicación de campos
 
-| Campo | Explicación |
-|---|---|
-| `id` | Identificador único del usuario |
-| `name` | Nombre visible |
-| `email` | Email único |
-| `passwordHash` | Hash de la contraseña |
-| `role` | Rol del usuario |
-| `isActive` | Indica si la cuenta está activa |
-| `createdAt` | Fecha de creación |
-| `updatedAt` | Fecha de última modificación |
+| Campo          | Explicación                     |
+| -------------- | ------------------------------- |
+| `id`           | Identificador único del usuario |
+| `name`         | Nombre visible                  |
+| `email`        | Email único                     |
+| `passwordHash` | Hash de la contraseña           |
+| `role`         | Rol del usuario                 |
+| `isActive`     | Indica si la cuenta está activa |
+| `createdAt`    | Fecha de creación               |
+| `updatedAt`    | Fecha de última modificación    |
 
 ## Comandos usados
 
@@ -62,31 +62,30 @@ El modelo User en Prisma representa cómo se guardarán los usuarios en la base 
 
 En Prisma, los atributos que empiezan por `@` se aplican sobre campos específicos para definir reglas, restricciones y comportamientos automáticos en la base de datos:
 
-* **`@id`:** Marca el campo como la **clave primaria** (*Primary Key*) del modelo. Garantiza que cada registro tenga un identificador único e irrepetible en la tabla.
-* **`@default(...)`:** Asigna un **valor por defecto** al campo si no se proporciona uno de forma explícita al crear el registro (por ejemplo, `@default(now())` para la fecha actual o `@default(true)` para booleanos).
-* **`@unique`:** Establece una restricción de **unicidad**. Impide que existan dos registros con el mismo valor en toda la tabla (fundamental para campos como `email`).
-* **`@updatedAt`:** Automatiza el **control de modificaciones**. Cada vez que un registro se edita o actualiza, Prisma asigna automáticamente la fecha y hora actuales a esa columna.
+- **`@id`:** Marca el campo como la **clave primaria** (_Primary Key_) del modelo. Garantiza que cada registro tenga un identificador único e irrepetible en la tabla.
+- **`@default(...)`:** Asigna un **valor por defecto** al campo si no se proporciona uno de forma explícita al crear el registro (por ejemplo, `@default(now())` para la fecha actual o `@default(true)` para booleanos).
+- **`@unique`:** Establece una restricción de **unicidad**. Impide que existan dos registros con el mismo valor en toda la tabla (fundamental para campos como `email`).
+- **`@updatedAt`:** Automatiza el **control de modificaciones**. Cada vez que un registro se edita o actualiza, Prisma asigna automáticamente la fecha y hora actuales a esa columna.
 
 ## Enum Role
 
 Utilizar un `enum` para definir los roles en lugar de permitir texto libre (`String`) es una buena práctica fundamental en el diseño de bases de datos por las siguientes razones:
 
 1. **Validación e integridad de datos:** Restringe los valores permitidos tanto en PostgreSQL como en la aplicación. Impide que se inserten por error valores inconsistentes, tipografías erróneas o variantes como `"admin"`, `"Admin"`, `"ADMINISTRADOR"` o `"User"`.
-2. **Autocompletado y *Type Safety* en TypeScript:** Prisma genera un tipo estático a partir del `enum`. En tu código backend, la API solo aceptará valores válidos (`Role.USER` o `Role.ADMIN`), ofreciendo sugerencias automáticas en el editor y detectando fallos en tiempo de compilación.
+2. **Autocompletado y _Type Safety_ en TypeScript:** Prisma genera un tipo estático a partir del `enum`. En tu código backend, la API solo aceptará valores válidos (`Role.USER` o `Role.ADMIN`), ofreciendo sugerencias automáticas en el editor y detectando fallos en tiempo de compilación.
 3. **Documentación clara del dominio:** Define explícitamente en el archivo de configuración cuáles son los únicos niveles de acceso que existen en el sistema. Cualquier desarrollador sabrá qué roles hay disponibles sin necesidad de inspeccionar los datos de la base de datos.
 4. **Mantenibilidad y escalabilidad:** Si en el futuro necesitas añadir un nuevo perfil (por ejemplo, `MODERATOR` o `SUPERADMIN`), basta con agregarlo al `enum` en `schema.prisma`. El compilador de TypeScript te indicará inmediatamente qué partes del código requieren actualización para soportar el nuevo rol.
 
-
 ## Módelo y reglas de negocio
 
-| Regla de negocio | Campo o atributo Prisma relacionado |
-| --- | --- |
-| **El email no se puede repetir** | `@unique` (en el campo `email`) |
-| **Todo usuario tiene un identificador único** | `@id` (con `@default(autoincrement())`) |
-| **Todo usuario empieza activo** | `@default(true)` (en el campo `isActive`) |
-| **El rol por defecto es USER** | `@default(USER)` (en el campo `role`) |
-| **La fecha de creación se asigna automáticamente** | `@default(now())` (en el campo `createdAt`) |
-| **La fecha de modificación se actualiza al cambiar el usuario** | `@updatedAt` (en el campo `updatedAt`) |
+| Regla de negocio                                                | Campo o atributo Prisma relacionado         |
+| --------------------------------------------------------------- | ------------------------------------------- |
+| **El email no se puede repetir**                                | `@unique` (en el campo `email`)             |
+| **Todo usuario tiene un identificador único**                   | `@id` (con `@default(autoincrement())`)     |
+| **Todo usuario empieza activo**                                 | `@default(true)` (en el campo `isActive`)   |
+| **El rol por defecto es USER**                                  | `@default(USER)` (en el campo `role`)       |
+| **La fecha de creación se asigna automáticamente**              | `@default(now())` (en el campo `createdAt`) |
+| **La fecha de modificación se actualiza al cambiar el usuario** | `@updatedAt` (en el campo `updatedAt`)      |
 
 ## Campos futuros User
 

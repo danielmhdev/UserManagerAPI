@@ -19,12 +19,12 @@ GET api/users/array/active
 
 ## Casos probados
 
-| Petición | Código esperado | Resultado | Observaciones / Cuerpo de la respuesta |
-| --- | ---: | ---: | --- |
-| `GET /api/users/array/1` | 200 | **200 OK** | Devuelve el usuario 1 (Ana García): `{"message": "Usuario encontrado", "data": {...}}` |
-| `GET /api/users/array/2` | 200 | **200 OK** | Devuelve el usuario 2 (Carlos Pérez): `{"message": "Usuario encontrado", "data": {...}}` |
-| `GET /api/users/array/999` | 404 | **404 Not Found** | El ID es un número válido pero no existe en el array: `{"error": "Usuario no encontrado"}` |
-| `GET /api/users/array/abc` | 400 | **400 Bad Request** | `Number("abc")` da `NaN`, activa el primer `if`: `{"error": "El ID debe ser un número"}` |
+| Petición                   | Código esperado |           Resultado | Observaciones / Cuerpo de la respuesta                                                     |
+| -------------------------- | --------------: | ------------------: | ------------------------------------------------------------------------------------------ |
+| `GET /api/users/array/1`   |             200 |          **200 OK** | Devuelve el usuario 1 (Ana García): `{"message": "Usuario encontrado", "data": {...}}`     |
+| `GET /api/users/array/2`   |             200 |          **200 OK** | Devuelve el usuario 2 (Carlos Pérez): `{"message": "Usuario encontrado", "data": {...}}`   |
+| `GET /api/users/array/999` |             404 |   **404 Not Found** | El ID es un número válido pero no existe en el array: `{"error": "Usuario no encontrado"}` |
+| `GET /api/users/array/abc` |             400 | **400 Bad Request** | `Number("abc")` da `NaN`, activa el primer `if`: `{"error": "El ID debe ser un número"}`   |
 
 ## Explicación personal
 
@@ -38,5 +38,6 @@ hay que convertirlo a number antes de compararlo con los id de los usuarios.
 2. /api/users/active
 3. /api/users/:id
 ```
+
 Las rutas estáticas específicas `(/count, /active)` deben ir siempre antes que las rutas dinámicas con parámetros (/:id).
 Dado que express lee el documento de arriba a abajo de forma secuencial y puede interpretar `/count o /active`como un ID en vez de como una ruta estática, dando lugar a errores.

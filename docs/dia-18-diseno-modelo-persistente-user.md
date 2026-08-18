@@ -11,23 +11,22 @@
 - He definido las reglas de role e isActive.
 - He preparado el diseño para convertirlo más adelante en un modelo Prisma.
 
-
 ## Campos del modelo User
 
-| Campo | Tipo conceptual | Obligatorio | Único | Valor por defecto | Se devuelve al cliente |
-|---|---|---|---|---|---|
-| `id` | número | sí | sí | automático | sí |
-| `name` | texto | sí | no | no | sí |
-| `email` | texto | sí | sí | no | sí |
-| `passwordHash` | texto | sí | no | no | no |
-| `role` | `USER` / `ADMIN` | sí | no | `USER` | sí |
-| `isActive` | booleano | sí | no | `true` | sí |
-| `createdAt` | fecha | sí | no | automático | sí |
-| `updatedAt` | fecha | sí | no | automático | sí |
-| `lastLoginAt` | fecha| no | no| null | sí |
-| `avatarUrl` | texto | no | no | null | sí |
-| `phone` | texto | no | si| no | sí |
-| `bio` | texto | no | no | no | sí |
+| Campo          | Tipo conceptual  | Obligatorio | Único | Valor por defecto | Se devuelve al cliente |
+| -------------- | ---------------- | ----------- | ----- | ----------------- | ---------------------- |
+| `id`           | número           | sí          | sí    | automático        | sí                     |
+| `name`         | texto            | sí          | no    | no                | sí                     |
+| `email`        | texto            | sí          | sí    | no                | sí                     |
+| `passwordHash` | texto            | sí          | no    | no                | no                     |
+| `role`         | `USER` / `ADMIN` | sí          | no    | `USER`            | sí                     |
+| `isActive`     | booleano         | sí          | no    | `true`            | sí                     |
+| `createdAt`    | fecha            | sí          | no    | automático        | sí                     |
+| `updatedAt`    | fecha            | sí          | no    | automático        | sí                     |
+| `lastLoginAt`  | fecha            | no          | no    | null              | sí                     |
+| `avatarUrl`    | texto            | no          | no    | null              | sí                     |
+| `phone`        | texto            | no          | si    | no                | sí                     |
+| `bio`          | texto            | no          | no    | no                | sí                     |
 
 ## Reglas del modelo
 
@@ -44,11 +43,11 @@
 
 ## Entrada, persistencia y salida
 
-| Representación | Qué significa | Contiene password | Contiene passwordHash |
-|---|---|---|---|
-| Entrada | Datos que envía el cliente | sí | no |
-| Persistencia | Datos guardados en base de datos | no | sí |
-| Salida | Datos que devuelve la API | no | no |
+| Representación | Qué significa                    | Contiene password | Contiene passwordHash |
+| -------------- | -------------------------------- | ----------------- | --------------------- |
+| Entrada        | Datos que envía el cliente       | sí                | no                    |
+| Persistencia   | Datos guardados en base de datos | no                | sí                    |
+| Salida         | Datos que devuelve la API        | no                | no                    |
 
 ### Ejemplo de entrada
 
@@ -112,14 +111,17 @@ La contraseña llega desde el cliente solo durante el registro o login. Después
 Guardar contraseñas en texto plano es una vulnerabilidad crítica. En su lugar, almacenamos un **`passwordHash`**, una versión cifrada e irreversible generada por algoritmos de seguridad (como `bcrypt`).
 
 ### Riesgos de guardar texto plano
-* **Fugas de datos:** Si la base de datos se filtra, los atacantes obtienen las contraseñas reales.
-* **Efecto dominó:** Los atacantes usan esas claves para acceder a otros servicios de las víctimas (email, banca).
-* **Privacidad:** Administradores o desarrolladores podrían ver las contraseñas de los usuarios.
+
+- **Fugas de datos:** Si la base de datos se filtra, los atacantes obtienen las contraseñas reales.
+- **Efecto dominó:** Los atacantes usan esas claves para acceder a otros servicios de las víctimas (email, banca).
+- **Privacidad:** Administradores o desarrolladores podrían ver las contraseñas de los usuarios.
 
 ### ¿Cómo funciona el `passwordHash`?
-* **Es unidireccional:** Es imposible revertir el hash para obtener la contraseña original.
-* **Verificación en login:** El servidor aplica la función de hashing a la clave introducida y compara si el resultado coincide con el hash guardado.
-* **Salting (Sal):** Añade un texto aleatorio único a cada contraseña antes de procesarla, asegurando que dos usuarios con la misma clave tengan hashes completamente diferentes.
+
+- **Es unidireccional:** Es imposible revertir el hash para obtener la contraseña original.
+- **Verificación en login:** El servidor aplica la función de hashing a la clave introducida y compara si el resultado coincide con el hash guardado.
+- **Salting (Sal):** Añade un texto aleatorio único a cada contraseña antes de procesarla, asegurando que dos usuarios con la misma clave tengan hashes completamente diferentes.
+
 ## Definir permisos por rol
 
 | Acción                    | USER | ADMIN |
@@ -132,6 +134,7 @@ Guardar contraseñas en texto plano es una vulnerabilidad crítica. En su lugar,
 | Cambiar su contraseña     | sí   | sí    |
 
 ## Ciclo de vida de un usuario
+
 ```mermaid
 flowchart LR
     A[Registrado] --> B[Activo]
@@ -146,6 +149,7 @@ Activo: El usuario ha validado su cuenta y dispone de acceso completo a todas la
 Desactivado: La cuenta ha sido suspendida temporalmente —ya sea por solicitud del usuario o por decisión del sistema— restringiendo el acceso y las operaciones, pero conservando su información.
 
 Reactivado: La cuenta ha superado el estado de suspensión tras una verificación o solicitud, restaurando el acceso completo y devolviendo al usuario al estado Activo.
+
 ## Dudas para elegir herramienta de acceso a datos
 
 - ¿Qué herramienta se usa más con TypeScript?
