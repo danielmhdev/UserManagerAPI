@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createUserController,
-  deleteUserController,
+  desactivateUserController,
   getUserByIdController,
   listUsersController,
   updateUserController,
@@ -18,6 +18,6 @@ userRouter.post("/", createUserController);
 
 userRouter.patch("/:id", updateUserController);
 
-userRouter.delete("/:id", deleteUserController);
+userRouter.delete("/:id", desactivateUserController);
 
 userRouter.patch("/:id/reactivate", reactivateUserController);

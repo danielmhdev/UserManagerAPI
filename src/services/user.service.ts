@@ -13,6 +13,11 @@ import {
   usersCount,
   updateUser
 } from "../repositories/user.repository";
+import {
+  isNonEmptyString,
+  isValidBasicEmail,
+  normalizeEmail
+} from "../utils/string.utils";
 
 // Definimos un tipo para la entrada de creación de usuario 
 type CreateUserInput = {
@@ -26,20 +31,6 @@ type UpdateUserInput = {
   email?: unknown;
   isActive?: unknown;
 };
-//================================
-//Funciones auxiliares para validar y normalizar datos de usuario
-//================================
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
-
-function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
-}
-
-function isValidBasicEmail(email: string): boolean {
-  return email.includes("@") && email.includes(".");
-}
 
 //===============================
 // Funciones del de usuario
