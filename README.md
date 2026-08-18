@@ -858,6 +858,48 @@ DELETE /api/users/:id → isActive = false
 
 La API nunca devuelve `passwordHash`.
 
+## Arquitectura actual
+
+El proyecto sigue una arquitectura por capas:
+
+```text
+Route → Controller → Service → Repository → Prisma → PostgreSQL
+```
+
+Estructura principal:
+
+```text
+src/
+  prisma.ts
+  server.ts
+  controllers/
+    health.controller.ts
+    user.controller.ts
+  errors/
+    AppError.ts
+  repositories/
+    user.repository.ts
+  routes/
+    health.routes.ts
+    user.routes.ts
+  services/
+    user.service.ts
+  utils/
+    parse.utils.ts
+    string.utils.ts
+```
+
+Rutas principales:
+
+| Método | Ruta | Acción |
+| --- | --- |---|
+| GET | `/api/health` | Comprobar estado de la API |
+| GET | `/api/users` | Listar usuarios |
+| GET | `/api/users/:id` | Consultar usuario |
+| POST | `/api/users` | Crear usuario |
+| PATCH | `/api/users/:id` | Actualizar usuario |
+| DELETE | `/api/users/:id` | Desactivar usuario |
+
 ## Documentación del reto
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
 - [Día 2 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)
@@ -889,5 +931,6 @@ La API nunca devuelve `passwordHash`.
 - [Día 28 - Servicios](docs/dia-28-servicios.md)
 - [Día 29 - Repositorio con Prisma](docs/dia-29-repositorio-prisma.md)
 - [Día 30 - CRUD persistente ordenado](docs/dia-30-crud-persistente-ordenado.md)
+- [Día 31 - Limpieza y refactor](docs/dia-31-limpieza-refactor.md)
 
 

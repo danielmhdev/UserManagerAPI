@@ -1,5 +1,7 @@
 // Los controladores de usuario manejan las solicitudes HTTP y delegan la lógica de negocio a los servicios.
 import { Request, Response, NextFunction } from "express";
+import { AppError } from "../errors/AppError";
+import { parseIdParam } from "../utils/parse.utils";
 import {
   createUserService,
   getActiveUsersService,
@@ -13,7 +15,6 @@ import {
   deactivateUserService,
   reactivateUserService
 } from "../services/user.service";
-import { AppError } from "../errors/AppError";
 
 // Función de listado de usuarios 
 export async function listUsersController(
@@ -159,13 +160,7 @@ export async function getUserByIdController(
   next: NextFunction
 ) {
   try {
-    const id = Number(req.params.id);
-
-    if (Number.isNaN(id)) {
-      throw new AppError("El ID debe ser un número", 400, {
-        received: req.params.id
-      });
-    }
+    const id = parseIdParam(req.params.id as string); // Usamos la función parseIdParam para validar y convertir el parámetro de ID a número. Si el ID no es un número válido, se lanzará un AppError.
 
     const user = await getUserByIdService(id);
 
@@ -202,13 +197,7 @@ export async function updateUserController(
   next: NextFunction
 ) {
   try {
-    const id = Number(req.params.id);
-
-    if (Number.isNaN(id)) {
-      throw new AppError("El ID debe ser un número", 400, {
-        received: req.params.id
-      });
-    }
+    const id = parseIdParam(req.params.id as string); // Usamos la función parseIdParam para validar y convertir el parámetro de ID a número. Si el ID no es un número válido, se lanzará un AppError.
 
     const updatedUser = await updateUserService(id, req.body);
 
@@ -222,20 +211,13 @@ export async function updateUserController(
 }
 
 // Función para desactivar un usuario existente
-export async function deleteUserController(
+export async function desactivateUserController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const id = Number(req.params.id);
-
-    if (Number.isNaN(id)) {
-      throw new AppError("El ID debe ser un número", 400, {
-        received: req.params.id
-      });
-    }
-
+    const id = parseIdParam(req.params.id as string)
     const deactivatedUser = await deactivateUserService(id);
 
     return res.status(200).json({
@@ -254,14 +236,7 @@ export async function reactivateUserController(
   next: NextFunction
 ) {
   try {
-    const id = Number(req.params.id);
-
-    if (Number.isNaN(id)) {
-      throw new AppError("El ID debe ser un número", 400, {
-        received: req.params.id
-      });
-    }
-
+    const id = parseIdParam(req.params.id as string)
     const reactivatedUser = await reactivateUserService(id);
 
     return res.status(200).json({
