@@ -1,9 +1,19 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { registerService } from "../services/auth.service";
 
-// Función de depuración para el controlador de autenticación
-export function authDebugController(req: Request, res: Response) {
-  return res.status(200).json({
-    message: "Auth controller preparado",
-    timestamp: new Date().toISOString(),
-  });
+export async function registerController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = await registerService(req.body);
+
+    return res.status(201).json({
+      message: "Usuario registrado correctamente",
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
 }

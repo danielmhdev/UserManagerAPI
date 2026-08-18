@@ -11,9 +11,9 @@ const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = process.env.PORT || 3000; // Definimos el puerto en el que escuchará el servidor
 app.use(express.json()); //Permite leer JSON en las solicitudes entrantes(POST,PUT...)
 
-app.use("/api/health", healthRouter); // Añadimos el router de salud a la ruta /health
-app.use("/api/auth", authRouter); // Añadimos el router de autenticación a la ruta /api/auth
-app.use("/api/users", userRouter); // Añadimos el router de usuarios a la ruta /api/users
+app.use("/api/health", healthRouter); // Comprobación de estado y disponibilidad de la API
+app.use("/api/auth", authRouter); // Autenticación y gestión de sesiones (registro, login, tokens)
+app.use("/api/users", userRouter); // Gestión y operaciones CRUD de usuarios
 
 // ==========================================
 // Middlewares

@@ -934,6 +934,38 @@ Reglas:
 - La contraseña en texto plano nunca se guarda.
 - `passwordHash` nunca se devuelve al cliente.
 
+## Autenticación
+
+El proyecto ya incluye una primera ruta de autenticación para registro de usuarios.
+
+Ruta:
+
+`POST /api/auth/register`
+
+Body esperado:
+
+```json
+{
+  "name": "Usuario Nuevo",
+  "email": "nuevo@email.com",
+  "password": "123456"
+}
+```
+
+Respuesta correcta:
+
+`201 Created`.
+
+Reglas:
+
+- El email no puede estar repetido.
+- La contraseña se guarda como `passwordHash` usando `bcrypt`.
+- El usuario se registra con `role USER` por defecto.
+- El usuario se registra activo por defecto.
+- `passwordHash` nunca se devuelve al cliente.
+
+Todavía no se genera token JWT. Eso se añadirá más adelante.
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -968,3 +1000,4 @@ Reglas:
 - [Día 30 - CRUD persistente ordenado](docs/dia-30-crud-persistente-ordenado.md)
 - [Día 31 - Limpieza y refactor](docs/dia-31-limpieza-refactor.md)
 - [Día 32 - Contraseñas seguras con bcrypt](docs/dia-32-bcrypt-passwords.md)
+- [Día 33 - Registro de usuarios](docs/dia-33-auth-register.md)
