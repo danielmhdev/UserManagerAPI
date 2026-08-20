@@ -966,6 +966,54 @@ Reglas:
 
 Todavía no se genera token JWT. Eso se añadirá más adelante.
 
+### Login
+
+Ruta:
+
+```text
+POST /api/auth/login
+```
+
+Body esperado:
+
+```json
+{
+  "email": "user@email.com",
+  "password": "user123"
+}
+```
+
+Respuesta correcta:
+
+```text
+200 OK
+```
+
+Respuesta aproximada:
+
+```json
+{
+  "message": "Login correcto",
+  "data": {
+    "user": {
+      "id": 2,
+      "name": "Usuario Demo",
+      "email": "user@email.com",
+      "role": "USER",
+      "isActive": true
+    }
+  }
+}
+```
+
+Reglas:
+
+- El email debe existir.
+- La contraseña debe coincidir con el `passwordHash`.
+- El usuario debe estar activo.
+- `passwordHash` nunca se devuelve.
+- Todavía no se devuelve token JWT.
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -1001,3 +1049,4 @@ Todavía no se genera token JWT. Eso se añadirá más adelante.
 - [Día 31 - Limpieza y refactor](docs/dia-31-limpieza-refactor.md)
 - [Día 32 - Contraseñas seguras con bcrypt](docs/dia-32-bcrypt-passwords.md)
 - [Día 33 - Registro de usuarios](docs/dia-33-auth-register.md)
+- [Día 34 - Login de usuarios](docs/dia-34-auth-login.md)

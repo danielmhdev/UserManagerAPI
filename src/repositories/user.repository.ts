@@ -2,6 +2,7 @@
 import { Role } from "../generated/prisma/client";
 import { prisma } from "../prisma";
 
+// Selector interno de autenticación.
 const userSafeSelect = {
   id: true,
   name: true,
@@ -11,6 +12,19 @@ const userSafeSelect = {
   createdAt: true,
   updatedAt: true,
 } as const;
+
+// Selector interno para login.
+const userWithPasswordSelect = {
+  id: true,
+  name: true,
+  email: true,
+  passwordHash: true,
+  role: true,
+  isActive: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
+
 // Datos que el repo necesita para crear el usuario.
 type CreateUserData = {
   name: string;
@@ -96,6 +110,17 @@ export function findUserByEmail(email: string) {
     select: userSafeSelect,
   });
 }
+
+//Encuentra al usuario por su correo y contraseña (para el login), no debe usarse para respuestas normales de la API(incluye paswordHash)
+export function findUserByEmailWithPassword(email: string) {
+  return prisma.user.findUnique({
+    where: {
+      email,
+    },
+    select: userWithPasswordSelect,
+  });
+}
+
 // Crearemos usuarios
 export function createUser(data: CreateUserData) {
   return prisma.user.create({
