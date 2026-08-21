@@ -1014,6 +1014,57 @@ Reglas:
 - `passwordHash` nunca se devuelve.
 - Todavía no se devuelve token JWT.
 
+### Login
+
+Ruta:
+
+```text
+POST /api/auth/login
+```
+
+Body esperado:
+
+```json
+{
+  "email": "user@email.com",
+  "password": "user123"
+}
+```
+
+Respuesta correcta:
+
+```json
+{
+  "message": "Login correcto",
+  "data": {
+    "user": {
+      "id": 2,
+      "name": "Usuario Demo",
+      "email": "user@email.com",
+      "role": "USER",
+      "isActive": true
+    },
+    "token": "eyJhbGciOiJIUzI1NiIs..."
+  }
+}
+```
+
+El token es un JWT firmado con `JWT_SECRET`.
+
+Variables necesarias:
+
+```env
+JWT_SECRET="cambia_esta_clave_en_produccion"
+JWT_EXPIRES_IN="1h"
+```
+
+Reglas:
+
+- El token se genera solo si el login es correcto.
+- El token contiene `userId`, `email` y `role`.
+- El token no contiene `password` ni `passwordHash`.
+- Todavía no se usa para proteger rutas.
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -1050,3 +1101,4 @@ Reglas:
 - [Día 32 - Contraseñas seguras con bcrypt](docs/dia-32-bcrypt-passwords.md)
 - [Día 33 - Registro de usuarios](docs/dia-33-auth-register.md)
 - [Día 34 - Login de usuarios](docs/dia-34-auth-login.md)
+- [Día 35 - Generación de token JWT](docs/dia-35-jwt.md)

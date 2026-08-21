@@ -1,12 +1,17 @@
 // Aqui guardaremos la lógica de autenticación
 import { AppError } from "../errors/AppError";
-import { createUser, findUserByEmail, findUserByEmailWithPassword  } from "../repositories/user.repository";
+import {
+  createUser,
+  findUserByEmail,
+  findUserByEmailWithPassword,
+} from "../repositories/user.repository";
 import { comparePassword, hashPassword } from "../utils/password.utils";
 import {
   isNonEmptyString,
   isValidBasicEmail,
   normalizeEmail,
 } from "../utils/string.utils";
+import { generateToken } from "../utils/jwt.utils";
 
 type RegisterInput = {
   name: unknown;
@@ -50,7 +55,7 @@ export async function registerService(input: RegisterInput) {
 
   if (existingUser) {
     throw new AppError("El email ya está registrado", 409, {
-      email: cleanEmail
+      email: cleanEmail,
     });
   }
 
@@ -59,7 +64,7 @@ export async function registerService(input: RegisterInput) {
   return createUser({
     name: cleanName,
     email: cleanEmail,
-    passwordHash
+    passwordHash,
   });
 }
 // Quitamos passwordHasg del objeto usuario antes de devolverlo al cliente.
@@ -95,7 +100,7 @@ export async function loginService(input: LoginInput) {
 
   const passwordMatches = await comparePassword(
     cleanPassword,
-    user.passwordHash
+    user.passwordHash,
   );
 
   if (!passwordMatches) {
@@ -108,7 +113,13 @@ export async function loginService(input: LoginInput) {
 
   const safeUser = removePasswordHash(user);
 
+  const token = generateToken({
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  });
   return {
-    user: safeUser
+    user: safeUser,
+    token,
   };
 }
