@@ -8,6 +8,7 @@ import {
   getInactiveUsersService,
   getUserByIdService,
   getUserByEmailService,
+  getCurrentUserService,
   listUsersService,
   getUsersCountService,
   getUsersByRoleService,
@@ -15,6 +16,8 @@ import {
   deactivateUserService,
   reactivateUserService,
 } from "../services/user.service";
+
+import { AuthenticatedRequest } from "../types/auth.types";
 
 // Función de listado de usuarios
 export async function listUsersController(
@@ -195,13 +198,21 @@ export async function createUserController(
 }
 // Función para actualizar un usuario existente
 export async function updateUserController(
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
     const id = parseIdParam(req.params.id as string); // Usamos la función parseIdParam para validar y convertir el parámetro de ID a número. Si el ID no es un número válido, se lanzará un AppError.
-
+    if (
+      req.user?.role !== "ADMIN" &&
+      Object.prototype.hasOwnProperty.call(req.body, "isActive")
+    ) {
+      throw new AppError(
+        "Solo un ADMIN puede cambiar el estado de un usuario",
+        403,
+      );
+    }
     const updatedUser = await updateUserService(id, req.body);
 
     return res.status(200).json({
@@ -245,6 +256,28 @@ export async function reactivateUserController(
     return res.status(200).json({
       message: "Usuario reactivado correctamente",
       data: reactivatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Nos devuelve el usuario autenticado desde la base de datos
+export async function getCurrentUser(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      throw new AppError("Usuario no autenticado", 401);
+    }
+
+    const user = await getCurrentUserService(req.user.userId);
+
+    return res.status(200).json({
+      message: "Usuario autenticado obtenido correctamente",
+      data: user,
     });
   } catch (error) {
     next(error);

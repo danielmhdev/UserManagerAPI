@@ -225,3 +225,7 @@ export async function reactivateUserService(id: number) {
 
   return reactivateUser(id);
 }
+
+export async function getCurrentUserService(userId: number) {
+  return getUserByIdService(userId);
+}

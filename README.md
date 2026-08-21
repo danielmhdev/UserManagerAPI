@@ -1099,6 +1099,40 @@ Rutas protegidas:
 
 Todavía no se aplican permisos por rol. Eso se trabajará en el siguiente paso.
 
+## Roles y permisos
+
+El proyecto distingue entre dos roles:
+
+```text
+USER
+ADMIN
+```
+
+Reglas principales:
+
+| Ruta                    | Permiso                   |
+| ----------------------- | ------------------------- |
+| `GET /api/users`        | Solo ADMIN                |
+| `POST /api/users`       | Solo ADMIN                |
+| `GET /api/users/me`     | Usuario autenticado       |
+| `GET /api/users/:id`    | ADMIN o el propio usuario |
+| `PATCH /api/users/:id`  | ADMIN o el propio usuario |
+| `DELETE /api/users/:id` | Solo ADMIN                |
+
+Middlewares creados:
+
+```text
+requireRole
+requireSelfOrAdmin
+```
+
+Códigos importantes:
+
+```text
+401 → No autenticado
+403 → Autenticado, pero sin permiso
+```
+
 ## Arquitecura
 
 ```text
@@ -1111,6 +1145,7 @@ src/
     AppError.ts
   middlewares/
     auth.middleware.ts
+    role.middleware.ts
   repositories/
     user.repository.ts
   routes/
@@ -1128,6 +1163,7 @@ src/
     password.utils.ts
     string.utils.ts
 ```
+
 ## Documentación del reto
 
 - [Día 1 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)
@@ -1166,3 +1202,4 @@ src/
 - [Día 34 - Login de usuarios](docs/dia-34-auth-login.md)
 - [Día 35 - Generación de token JWT](docs/dia-35-jwt.md)
 - [Día 36 - Middleware de autenticación](docs/dia-36-auth-middleware.md)
+- [Día 37 - Roles y permisos](docs/dia-37-roles-permisos.md)
