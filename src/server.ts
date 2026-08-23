@@ -7,9 +7,18 @@ import { userRouter } from "./routes/user.routes";
 import { authRouter } from "./routes/auth.routes";
 import { AppError } from "./errors/AppError";
 
+import cors from "cors";
+
 const app = express(); // Creamos una instancia de la aplicación Express
 const PORT = process.env.PORT || 3000; // Definimos el puerto en el que escuchará el servidor
 app.use(express.json()); //Permite leer JSON en las solicitudes entrantes(POST,PUT...)
+
+app.use(
+  cors({
+    origin: "http://localhost:3001" // El backend acepta peticiones del frontend que corre en http://localhost:3001.
+
+  })
+);
 
 app.use("/api/health", healthRouter); // Comprobación de estado y disponibilidad de la API
 app.use("/api/auth", authRouter); // Autenticación y gestión de sesiones (registro, login, tokens)
