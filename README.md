@@ -293,8 +293,6 @@ La API utiliza un middleware global de captura de excepciones que unifica las re
 
 ## 📚 Documentación del Reto (Día a Día)
 
-## 📚 Documentación del Reto (Día a Día)
-
 | Fase | Temas Tratados / Enlaces |
 | :--- | :--- |
 | **Fase 1: Fundamentos HTTP & Express** | • [Día 01 - Diseño inicial](docs/dia-01-diseno-inicial-usermanager.md)<br>• [Día 02 - Preparación del Proyecto](docs/dia-02-preparacion-proyecto.md)<br>• [Día 03 - Primer Endpoint](docs/dia-03-primer-endpoint.md)<br>• [Día 04 - Métodos HTTP](docs/dia-04-metodos-http.md)<br>• [Día 05 - JSON, body, params y headers](docs/dia-05-json-body-params-headers.md)<br>• [Día 06 - Cliente HTTP y depuración](docs/dia-06-cliente-http-depuracion.md) |
